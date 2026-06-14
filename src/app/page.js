@@ -1,6 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase'; // Links your canvas directly to your cloud data tunnel
 
+// CONCENTRIC MATHEMATICAL ALGORITHM: Sizing segments decrease outward from center (500,500)
 const computeZoneSpecs = (x, y) => {
   const centerX = 500;
   const centerY = 500;
@@ -21,17 +23,45 @@ export default function GameyGridDashboard() {
   const [subscriptionTier, setSubscriptionTier] = useState('weekly');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [errorPrompt, setErrorPrompt] = useState('');
+  
+  // State variables for real cloud data
+  const [liveDbSlots, setLiveDbSlots] = useState([]);
+  const [inventoryCounts, setInventoryCounts] = useState({ anchorsLeft: 10, premiumLeft: 100 });
 
-  const dummyStudioSlots = [
-    { x_coordinate: 460, y_coordinate: 460, studio_name: "Cyber Rebel Studios", destination_link: "https://steampowered.com", image_storage_url: "https://unsplash.com", game_trailer_url: "https://youtube.com" }
-  ];
+  // FETCH THE ABSOLUTE TRUTH DIRECTLY FROM SUPABASE ON PAGE LOAD
+  useEffect(() => {
+    const fetchCloudGridMemory = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('gaming_grid_slots')
+          .select('*')
+          .eq('availability_status', 'active');
+
+        if (error) throw error;
+        if (data) {
+          setLiveDbSlots(data);
+          
+          // Legally compliant dynamic inventory counter math
+          const activeAnchors = data.filter(s => s.block_size_px === 100).length;
+          const activePremium = data.filter(s => s.block_size_px === 40).length;
+          setInventoryCounts({
+            anchorsLeft: 10 - activeAnchors,
+            premiumLeft: 100 - activePremium
+          });
+        }
+      } catch (err) {
+        console.error("Database connection failure:", err.message);
+      }
+    };
+    fetchCloudGridMemory();
+  }, []);
 
   const displayCurrencySymbol = (priceUSD) => {
     if (selectedCurrency === 'EUR') return `€${(priceUSD * 0.92).toFixed(0)}`;
     if (selectedCurrency === 'NZD') return `NZ$${(priceUSD * 1.65).toFixed(0)}`;
     return `US$${priceUSD}`;
   };
-
+  // DISPATCH FORM PAYLOAD DIRECTLY TO THE STRIPE BACKEND ENDPOINT
   const executeSecureStripeCheckout = async (e) => {
     e.preventDefault();
     setCheckoutLoading(true);
@@ -72,7 +102,9 @@ export default function GameyGridDashboard() {
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
-        const occupant = dummyStudioSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
+        
+        // Dynamic lookup: Check if this coordinate exists inside your live Supabase array!
+        const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
 
         cellBlocks.push(
           <div
@@ -99,10 +131,11 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
-
   return (
     <div className="flex flex-col lg:flex-row items-start justify-center min-h-screen p-6 bg-slate-950 gap-8 font-sans">
       <div className="flex flex-col items-center flex-1 w-full">
+        
+        {/* NAVIGATION LAYER */}
         <div className="w-full max-w-[800px] flex justify-between items-center mb-6 bg-slate-900/60 border border-slate-800 px-6 py-4 rounded-2xl backdrop-blur-md">
           <h1 className="font-black text-sm tracking-widest text-slate-100 uppercase">GAMEYGRID.GG</h1>
           <select 
@@ -115,11 +148,13 @@ export default function GameyGridDashboard() {
           </select>
         </div>
 
+        {/* GEOMETRIC AD CANVAS */}
         <div className="relative border-4 border-slate-800 bg-slate-900/20 rounded-2xl p-3 shadow-2xl overflow-hidden max-w-full">
           <div className="flex flex-wrap w-[760px] h-[760px] bg-slate-950 rounded-lg overflow-hidden border border-slate-900">
             {renderGridMatrix()}
           </div>
 
+          {/* DYNAMIC HOVER VIDEO OVERLAY */}
           {activeHover && (
             <div className="absolute z-50 bottom-6 right-6 w-64 bg-slate-900 border border-orange-500/60 rounded-xl p-4 shadow-2xl backdrop-blur-md">
               <h4 className="font-black text-xs text-slate-100 uppercase truncate">{activeHover.studio_name}</h4>
@@ -135,6 +170,7 @@ export default function GameyGridDashboard() {
         </div>
       </div>
 
+      {/* SIDEBAR CONTAINER PANEL */}
       <div className="w-full lg:w-80 flex flex-col gap-6 lg:mt-16">
         {selectedBlock ? (
           <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-2xl">
@@ -156,7 +192,7 @@ export default function GameyGridDashboard() {
 
               <div>
                 <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Steam Game Store link</label>
-                <input type="url" required value={steamUrl} onChange={(e) => setSteamUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" placeholder="https://steampowered.com/app/..." />
+                <input type="url" required value={steamUrl} onChange={(e) => setSteamUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" placeholder="https://steampowered.com..." />
               </div>
 
               <div>
@@ -175,8 +211,23 @@ export default function GameyGridDashboard() {
           </div>
         ) : (
           <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-5 backdrop-blur-md">
-            <h3 className="text-xs font-black tracking-wider text-slate-400 uppercase mb-2">Live Canvas Control</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">Click any open, dashed square layout boundary on the geometric map to view real-time multi-currency pricing discount brackets and initialize a sandbox session.</p>
+            <h3 className="text-xs font-black tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+              Live Compliance Tracker
+            </h3>
+            <div className="space-y-3 font-mono text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Mega Anchors:</span>
+                <span className="text-orange-400 font-bold">{inventoryCounts.anchorsLeft} / 10 Left</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Premium Slots:</span>
+                <span className="text-orange-400 font-bold">{inventoryCounts.premiumLeft} / 100 Left</span>
+              </div>
+            </div>
+            <p className="text-[10px] text-slate-500 leading-relaxed font-mono mt-4 border-t border-slate-800/80 pt-3">
+              • Inventory tracks actual data rows fetched from live cloud clusters.
+            </p>
           </div>
         )}
       </div>
