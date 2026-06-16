@@ -207,6 +207,21 @@ export default function GameyGridDashboard() {
               <button type="submit" disabled={checkoutLoading} className="w-full bg-orange-500 hover:bg-orange-400 disabled:bg-slate-800 text-black font-extrabold py-2.5 rounded-lg transition-colors cursor-pointer text-center">
                 {checkoutLoading ? 'Encrypting Tokens...' : 'Open Sandbox Checkout'}
               </button>
+
+		<div className="flex items-start gap-2.5 my-4">
+		  <input 
+		    type="checkbox" 
+		    required 
+		    className="w-4 h-4 mt-0.5 accent-orange-500 rounded cursor-pointer focus:ring-0" 
+		  />
+		  <span className="text-[10px] text-slate-400 font-mono leading-relaxed">
+		    I explicitly read, accept, and agree to the 
+		    <a href="/terms" target="_blank" className="text-orange-400 hover:underline mx-1">Terms of Service</a> 
+		    and the 
+		    <a href="/privacy" target="_blank" className="text-orange-400 hover:underline ml-1">Refund Policy</a>. 
+		    I verify that I hold all legal trademarks and permissions for the uploaded media assets.
+		  </span>
+		</div>
             </form>
           </div>
         ) : (
