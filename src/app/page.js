@@ -137,7 +137,7 @@ export default function GameyGridDashboard() {
         
         {/* NAVIGATION LAYER */}
         <div className="w-full max-w-[800px] flex justify-between items-center mb-6 bg-slate-900/60 border border-slate-800 px-6 py-4 rounded-2xl backdrop-blur-md">
-          <h1 className="font-black text-sm tracking-widest text-slate-100 uppercase">GAMEYGRID.GG</h1>
+          <h1 className="font-black text-sm tracking-widest text-slate-100 uppercase">GAMEYGRID    TEST PAGE</h1>
           <select 
             value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)}
             className="bg-slate-950 text-xs font-bold border border-slate-700 text-orange-400 rounded-lg px-3 py-1.5 focus:outline-none cursor-pointer"
