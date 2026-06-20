@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(request) {
@@ -44,8 +44,33 @@ export async function POST(request) {
       metadata: {
         x, y, size, studioName, link: steamUrl, logoImageUrl, tier
       },
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
+          // 1. 🌐 ADD THIS LINE AT THE TOP of your POST function to detect your live domain name dynamically:
+    const origin = request.headers.get('origin') || 'https://gameygrid.com';
+
+    // 2. Look right inside your stripe session creator parameters:
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${selectedBlock.specs.zoneName} Coordinates (${x}, ${y})`,
+              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px]`,
+            },
+            unit_amount: priceInCents,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
+      
+      // ✅ PASTE THE CORRECTED DYNAMIC ROUTING LINKS RIGHT HERE:
+      success_url: `${origin}/success`,
+      cancel_url: `${origin}/`,
+    });
+
     });
 
     // 4. Safely return the generated secure checkout URL back to your front-facing interface
