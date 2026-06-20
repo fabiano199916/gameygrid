@@ -6,7 +6,7 @@ export async function POST(request) {
     const body = await request.json();
     const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = body;
 
-    // 🌐 FIXED PLACEMENT: Safely capture your live website address before building the Stripe parameters
+    // 🌐 FIXED POSITION: Capturing your live website address cleanly before building the Stripe metrics
     const origin = request.headers.get('origin') || 'https://gameygrid.com';
 
     // Calculate baseline pricing tiers dynamically for Stripe ledger clearance
