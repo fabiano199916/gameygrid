@@ -3,51 +3,25 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(request) {
   try {
-    // 1. Capture the data package sent from your front-facing grid canvas interface
-    const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = await request.json();
+    const body = await request.json();
+    const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = body;
 
-    // 2. Compute dynamic price parameters mapped directly to your concentric grid layers
-    let basePriceUSD = 75; // Zone 3 Standard Block baseline fallback price
-    if (size === "100") basePriceUSD = 400; // Zone 1 Mega Anchor pricing
-    if (size === "40") basePriceUSD = 150;  // Zone 2 Premium pricing
-    if (size === "10") basePriceUSD = 25;   // Zone 4 Micro pricing
-
-    let multiplier = 1;
-    let discount = 1;
-
-    // Apply corporate loyalty discounts for extended commitments
-    if (tier === 'monthly') { multiplier = 4; discount = 0.90; }   // 10% Off
-    if (tier === 'annual') { multiplier = 52; discount = 0.75; }  // 25% Off
-
-    // Compute the final price transaction package in cents for Stripe's engine
-    const finalAmountCents = Math.round((basePriceUSD * multiplier * discount) * 100);
-
-    // 3. INITIALIZE THE SECURE STRIPE CHECKOUT SESSION WINDOW
-    // This supports international card networks, digital wallets, and stablecoin crypto
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd', // Pegged to stable global USD parameters
-            product_data: {
-              name: `GameyGrid Coordinates Allocation: (${x}, ${y})`,
-              description: `Concentric Placement Zone Allocation for studio: ${studioName}. Interval tier: ${tier.toUpperCase()}`,
-            },
-            unit_amount: finalAmountCents,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      // Store these parameters inside Stripe as metadata tokens to read after payment succeeds
-      metadata: {
-        x, y, size, studioName, link: steamUrl, logoImageUrl, tier
-      },
-          // 1. 🌐 ADD THIS LINE AT THE TOP of your POST function to detect your live domain name dynamically:
+    // 🌐 FIXED PLACEMENT: Safely capture your live website address before building the Stripe parameters
     const origin = request.headers.get('origin') || 'https://gameygrid.com';
 
-    // 2. Look right inside your stripe session creator parameters:
+    // Calculate baseline pricing tiers dynamically for Stripe ledger clearance
+    let priceInUSD = 25;
+    if (parseInt(size) === 100) priceInUSD = 400;
+    if (parseInt(size) === 40) priceInUSD = 150;
+    if (parseInt(size) === 20) priceInUSD = 75;
+
+    // Apply corporate subscription tier discount models
+    if (tier === 'monthly') priceInUSD = Math.round(priceInUSD * 0.90);
+    if (tier === 'annual') priceInUSD = Math.round(priceInUSD * 0.75);
+
+    const priceInCents = priceInUSD * 100;
+
+    // Build the secure payment checkout session structure
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -55,7 +29,7 @@ export async function POST(request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${selectedBlock.specs.zoneName} Coordinates (${x}, ${y})`,
+              name: `Grid Coordinate Slot (${x}, ${y})`,
               description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px]`,
             },
             unit_amount: priceInCents,
@@ -65,18 +39,14 @@ export async function POST(request) {
       ],
       mode: 'payment',
       metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
-      
-      // ✅ PASTE THE CORRECTED DYNAMIC ROUTING LINKS RIGHT HERE:
       success_url: `${origin}/success`,
       cancel_url: `${origin}/`,
     });
 
-    });
-
-    // 4. Safely return the generated secure checkout URL back to your front-facing interface
-    return NextResponse.json({ success: true, url: session.url });
+    return NextResponse.json({ url: session.url });
 
   } catch (error) {
-    return NextResponse.json({ success: false, error: `Financial Engine Exception: ${error.message}` }, { status: 500 });
+    console.error('Checkout Pipeline Defect:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
