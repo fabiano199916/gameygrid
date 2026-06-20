@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 export async function POST(request) {
   try {
     // 1. Capture the data package sent from your front-facing grid canvas interface
-    const { x, y, size, studioName, steamUrl, tier } = await request.json();
+    const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = await request.json();
 
     // 2. Compute dynamic price parameters mapped directly to your concentric grid layers
     let basePriceUSD = 75; // Zone 3 Standard Block baseline fallback price

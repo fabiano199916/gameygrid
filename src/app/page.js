@@ -20,6 +20,7 @@ export default function GameyGridDashboard() {
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [studioName, setStudioName] = useState('');
   const [steamUrl, setSteamUrl] = useState('');
+  const [logoImageUrl, setLogoImageUrl] = useState(''); // 🎨 Coded custom artwork link tracker state
   const [subscriptionTier, setSubscriptionTier] = useState('weekly');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [errorPrompt, setErrorPrompt] = useState('');
@@ -83,6 +84,7 @@ export default function GameyGridDashboard() {
           size: selectedBlock.specs.size.toString(),
           studioName,
           steamUrl,
+          logoImageUrl, // 🔏 Securely tunneled custom image link to payment metadata
           tier: subscriptionTier
         })
       });
@@ -184,45 +186,64 @@ export default function GameyGridDashboard() {
 
             {errorPrompt && <p className="text-xs font-mono text-red-400 bg-red-950/30 p-2 border border-red-900 rounded-lg mb-3">⚠️ {errorPrompt}</p>}
 
-            <form onSubmit={executeSecureStripeCheckout} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Studio / Developer Name</label>
-                <input type="text" required value={studioName} onChange={(e) => setStudioName(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none" placeholder="e.g. Pixel Forge Games" />
-              </div>
+                            <form onSubmit={executeSecureStripeCheckout} className="space-y-4 text-xs">
+          <div>
+            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Studio / Developer Name</label>
+            <input type="text" required value={studioName} onChange={(e) => setStudioName(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none" placeholder="e.g. Pixel Forge Games" />
+          </div>
 
-              <div>
-                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Steam Game Store link</label>
-                <input type="url" required value={steamUrl} onChange={(e) => setSteamUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" placeholder="https://steampowered.com..." />
-              </div>
+          <div>
+            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Steam Game Store link</label>
+            <input type="url" required value={steamUrl} onChange={(e) => setSteamUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" placeholder="https://steampowered.com..." />
+          </div>
 
-              <div>
-                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Billing Rental Cycle</label>
-                <select value={subscriptionTier} onChange={(e) => setSubscriptionTier(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-orange-400 font-bold focus:outline-none cursor-pointer">
-                  <option value="weekly">Weekly — Base Rate</option>
-                  <option value="monthly">Monthly — Save 10%</option>
-                  <option value="annual">Annual — Save 25%</option>
-                </select>
-              </div>
+          {/* 🎨 BRAND NEW FIELD: CUSTOM LOGO DESIGN IMAGE LINK */}
+          <div>
+            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Custom Logo or Drawing Image URL</label>
+            <input 
+              type="url" 
+              required 
+              value={logoImageUrl} 
+              onChange={(e) => setLogoImageUrl(e.target.value)} 
+              placeholder="https://imgur.com" 
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" 
+            />
+            <p className="text-[9px] text-slate-500 font-mono mt-1 leading-normal">
+              Paste a direct asset web link to your game drawing or icon design (supports PNG, JPG, or animated GIFs).
+            </p>
+          </div>
 
-              <button type="submit" disabled={checkoutLoading} className="w-full bg-orange-500 hover:bg-orange-400 disabled:bg-slate-800 text-black font-extrabold py-2.5 rounded-lg transition-colors cursor-pointer text-center">
-                {checkoutLoading ? 'Encrypting Tokens...' : 'Open Sandbox Checkout'}
-              </button>
+          <div>
+            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Billing Rental Cycle</label>
+            <select value={subscriptionTier} onChange={(e) => setSubscriptionTier(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-orange-400 font-bold focus:outline-none cursor-pointer">
+              <option value="weekly">Weekly — Base Rate</option>
+              <option value="monthly">Monthly — Save 10%</option>
+              <option value="annual">Annual — Save 25%</option>
+            </select>
+          </div>
 
-		<div className="flex items-start gap-2.5 my-4">
-		  <input 
-		    type="checkbox" 
-		    required 
-		    className="w-4 h-4 mt-0.5 accent-orange-500 rounded cursor-pointer focus:ring-0" 
-		  />
-		  <span className="text-[10px] text-slate-400 font-mono leading-relaxed">
-		    I explicitly read, accept, and agree to the 
-		    <a href="/terms" target="_blank" className="text-orange-400 hover:underline mx-1">Terms of Service</a> 
-		    and the 
-		    <a href="/privacy" target="_blank" className="text-orange-400 hover:underline ml-1">Refund Policy</a>. 
-		    I verify that I hold all legal trademarks and permissions for the uploaded media assets.
-		  </span>
-		</div>
-            </form>
+          {/* 🛡️ THE MANDATORY LEGAL SHIELD GATEWAY INPUT */}
+          <div className="flex items-start gap-2.5 my-4">
+            <input 
+              type="checkbox" 
+              required 
+              className="w-4 h-4 mt-0.5 accent-orange-500 rounded cursor-pointer focus:ring-0" 
+            />
+            <span className="text-[10px] text-slate-400 font-mono leading-relaxed">
+              I explicitly read, accept, and agree to the 
+              <a href="/terms" target="_blank" className="text-orange-400 hover:underline mx-1">Terms of Service</a> 
+              and the 
+              <a href="/privacy" target="_blank" className="text-orange-400 hover:underline ml-1">Refund Policy</a>. 
+              I verify that I hold all legal trademarks and permissions for the uploaded media assets.
+            </span>
+          </div>
+
+          <button type="submit" disabled={checkoutLoading} className="w-full bg-orange-500 hover:bg-orange-400 disabled:bg-slate-800 text-black font-extrabold py-2.5 rounded-lg transition-colors cursor-pointer text-center">
+            {checkoutLoading ? 'Encrypting Tokens...' : 'Open Sandbox Checkout'}
+          </button>
+        </form>
+
+
           </div>
         ) : (
           <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-5 backdrop-blur-md">

@@ -25,7 +25,7 @@ export async function POST(request) {
     const session = event.data.object;
 
     // Extract the pixel coordinates and metadata tokens we attached to the Stripe session earlier
-    const { x, y, size, studioName, link, tier } = session.metadata;
+    const { x, y, size, studioName, link, logoImageUrl, tier } = session.metadata;
 
     // Calculate a legally compliant expiration calendar profile based on their chosen subscription tier
     let daysToAdd = 7; // Weekly baseline fallback format
@@ -45,7 +45,7 @@ export async function POST(request) {
           block_size_px: parseInt(size),
           studio_name: studioName,
           destination_link: link,
-          image_storage_url: 'https://unsplash.com', // Default secure placeholder avatar asset
+          image_storage_url: logoImageUrl, // Default secure placeholder avatar asset substituted by customer choice
           game_trailer_url: 'https://youtube.com',
           availability_status: 'pending_review', // Safely quarantined until you approve it from your app!
           subscription_tier: tier,
