@@ -42,7 +42,7 @@ export async function POST(request) {
       mode: 'payment',
       // Store these parameters inside Stripe as metadata tokens to read after payment succeeds
       metadata: {
-        x, y, size, studioName, link: steamUrl, tier
+        x, y, size, studioName, link: steamUrl, logoImageUrl, tier
       },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
