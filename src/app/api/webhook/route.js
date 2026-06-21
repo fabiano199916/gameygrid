@@ -51,9 +51,10 @@ export async function POST(request) {
       const cleanStudioQuery = encodeURIComponent(studioName);
       const iponzSearchLink = `https://iponz.govt.nz{cleanStudioQuery}`;
 
+      // ✅ WHAT TO PASTE IN ITS PLACE (Your professional branded line):
       await resend.emails.send({
         from: 'GameyGrid Security <security@gameygrid.com>',
-        to: process.env.MODERATOR_NOTIFICATION_EMAIL, // Dispatches directly to your personal inbox
+        to: process.env.MODERATOR_NOTIFICATION_EMAIL,
         subject: `🚨 [QUARANTINE REVIEW] New Grid Placement: ${studioName}`,
         html: `
           <div style="font-family: monospace; background-color: #020617; color: #f1f5f9; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; max-w: 600px;">
