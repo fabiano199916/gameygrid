@@ -99,7 +99,7 @@ export default function GameyGridDashboard() {
     }
   };
 
-      const renderGridMatrix = () => {
+        const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
@@ -115,23 +115,27 @@ export default function GameyGridDashboard() {
         const topPositionPx = y * renderScaleMultiplier;
         const renderedSizePx = specs.size * renderScaleMultiplier;
 
+        // TARGET DIMENSION LOCK: Force the viewing glass to balloon to exactly 300px regardless of base size
+        const targetLensSizePx = 300;
+        const offsetCorrectionPx = (targetLensSizePx - renderedSizePx) / 2;
+
         cellBlocks.push(
           <div
             key={`${x}-${y}`}
             style={{ 
               position: 'absolute',
-              left: `${leftPositionPx}px`,
-              top: `${topPositionPx}px`,
-              width: `${renderedSizePx}px`, 
-              height: `${renderedSizePx}px`,
-              zIndex: isCurrentlyHovered ? 99999 : 10,
-              pointerEvents: 'auto'
+              left: isCurrentlyHovered ? `${leftPositionPx - offsetCorrectionPx}px` : `${leftPositionPx}px`,
+              top: isCurrentlyHovered ? `${topPositionPx - offsetCorrectionPx}px` : `${topPositionPx}px`,
+              width: isCurrentlyHovered ? `${targetLensSizePx}px` : `${renderedSizePx}px`, 
+              height: isCurrentlyHovered ? `${targetLensSizePx}px` : `${renderedSizePx}px`,
+              zIndex: isCurrentlyHovered ? 999999 : 10,
+              transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
           >
             {occupant ? (
-              /* 🎯 HARDWARE-ACCELERATED FLOATING 5X LENS CONTAINER */
+              /* 🎯 HARDWARE-ACCELERATED FLOATING PIXEL DILATION ENGINE */
               <a 
                 href={occupant.destination_link} 
                 target="_blank" 
@@ -141,14 +145,16 @@ export default function GameyGridDashboard() {
                   inset: 0,
                   display: 'block',
                   backgroundColor: '#0f172a',
-                  transform: isCurrentlyHovered ? 'scale(30.0)' : 'scale(1.0)',
-                  transformOrigin: 'center center',
-                  zIndex: isCurrentlyHovered ? 999999 : 20,
-                  boxShadow: isCurrentlyHovered ? '0 25px 50px -12px rgba(249, 115, 22, 0.9)' : 'none',
-                  border: isCurrentlyHovered ? '2px solid #f97316' : '1px solid rgba(249, 115, 22, 0.2)',
-                  borderRadius: isCurrentlyHovered ? '6px' : '0px',
-                  transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease',
-                  cursor: 'pointer'
+                  zIndex: isCurrentlyHovered ? 9999999 : 20,
+                  boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
+                  
+                  // 🔴 THE NEW OVERSIZED RADAR CIRCLE RING
+                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: isCurrentlyHovered ? '50%' : '0px',
+                  
+                  transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
+                  cursor: 'pointer',
+                  overflow: 'hidden' // Keeps the square image cleanly clipped inside your new massive red circle lens
                 }}
               >
                 <img 
@@ -178,6 +184,7 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
+
 
 
   return (
