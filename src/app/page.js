@@ -141,7 +141,7 @@ export default function GameyGridDashboard() {
                   inset: 0,
                   display: 'block',
                   backgroundColor: '#0f172a',
-                  transform: isCurrentlyHovered ? 'scale(5.0)' : 'scale(1.0)',
+                  transform: isCurrentlyHovered ? 'scale(15.0)' : 'scale(1.0)',
                   transformOrigin: 'center center',
                   zIndex: isCurrentlyHovered ? 999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 25px 50px -12px rgba(249, 115, 22, 0.9)' : 'none',
