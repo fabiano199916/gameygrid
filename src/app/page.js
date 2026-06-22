@@ -99,7 +99,7 @@ export default function GameyGridDashboard() {
     }
   };
 
-  const renderGridMatrix = () => {
+    const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
@@ -107,54 +107,69 @@ export default function GameyGridDashboard() {
         
         // Dynamic lookup: Check if this coordinate exists inside your live Supabase array!
         const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
+        const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
-                cellBlocks.push(
+        cellBlocks.push(
           <div
             key={`${x}-${y}`}
-            style={{ width: `${specs.size}px`, height: `${specs.size}px` }}
-            className={`border border-slate-900/40 relative group transition-all duration-150 ${
-              occupant ? 'bg-slate-900 border-orange-500/40 z-20' : 'bg-slate-950/60 hover:bg-emerald-500/20 border-dashed cursor-pointer'
-            }`}
+            style={{ 
+              width: `${specs.size}px`, 
+              height: `${specs.size}px`,
+              position: 'relative',
+              zIndex: isCurrentlyHovered ? 9999 : 10
+            }}
+            className="border border-slate-900/40 transition-all duration-150"
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
-            onClick={() => !occupant && setSelectedBlock({ x, y, specs })}
           >
             {occupant ? (
-              /* 🎯 DYNAMIC OVERLAY 5X ZOOM LENS LAYER CONTAINER */
-             {/* ✅ CORRECT CODE (Wired up with full hardware-accelerated transform engines): */}
-<a 
-  href={occupant.destination_link} 
-  target="_blank" 
-  rel="noopener noreferrer" 
-  className="absolute inset-0 block transform origin-center transition-transform duration-200 ease-out hover:scale-[5.0] hover:z-50 hover:shadow-[0_25px_50px_-12px_rgba(249,115,22,0.5)] hover:border-2 hover:border-orange-500 hover:rounded-md bg-slate-900"
->
-
+              /* 🎯 HARDWARE-ACCELERATED INLINE 5X ZOOM LENS LAYER */
+              <a 
+                href={occupant.destination_link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'block',
+                  backgroundColor: '#0f172a',
+                  transform: isCurrentlyHovered ? 'scale(5.0)' : 'scale(1.0)',
+                  transformOrigin: 'center center',
+                  zIndex: isCurrentlyHovered ? 99999 : 20,
+                  boxShadow: isCurrentlyHovered ? '0 25px 50px -12px rgba(249, 115, 22, 0.7)' : 'none',
+                  border: isCurrentlyHovered ? '2px solid #f97316' : 'none',
+                  borderRadius: isCurrentlyHovered ? '6px' : '0px',
+                  transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease',
+                  cursor: 'pointer'
+                }}
+              >
                 <img 
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
-                  className="w-full h-full object-cover rounded-none pointer-events-none"
+                  className="w-full h-full object-cover pointer-events-none"
                   referrerPolicy="no-referrer"
                   onError={(e) => {
-                    // Fallback visual safeguard if hotlinking protection limits trigger on host
                     e.target.onerror = null; 
                     e.target.src = 'https://unsplash.com';
                   }}
                 />
               </a>
             ) : (
-              <div className="opacity-0 group-hover:opacity-100 absolute inset-0 bg-black/95 flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono p-0.5 pointer-events-none z-10">
+              <div 
+                onClick={() => setSelectedBlock({ x, y, specs })}
+                className="opacity-0 hover:opacity-100 absolute inset-0 bg-black/95 flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono p-0.5 cursor-pointer z-10"
+              >
                 <span>OPEN</span>
                 <span>{displayCurrencySymbol(specs.basePriceUSD)}</span>
               </div>
             )}
           </div>
         );
-}
-;
       }
     }
     return cellBlocks;
   };
+
   return (
     <div className="flex flex-col lg:flex-row items-start justify-center min-h-screen p-6 bg-slate-950 gap-8 font-sans">
       <div className="flex flex-col items-center flex-1 w-full">
