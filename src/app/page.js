@@ -119,16 +119,34 @@ export default function GameyGridDashboard() {
             onMouseLeave={() => setActiveHover(null)}
             onClick={() => !occupant && setSelectedBlock({ x, y, specs })}
           >
-            {occupant ? (
-              <img src={occupant.image_storage_url} alt="Indie Game Poster" className="w-full h-full object-cover" />
+                        {occupant ? (
+              /* 🎯 DYNAMIC 5X ZOOM LENS LINK WRAPPER CONTAINER */
+              <a 
+                href={occupant.destination_link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block w-full h-full relative group/lens cursor-pointer"
+              >
+                <img 
+                  src={occupant.image_storage_url} 
+                  alt={occupant.studio_name} 
+                  crossOrigin="anonymous"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover transition-all duration-200 ease-out origin-center pointer-events-none scale-100 group-hover/lens:scale-[5] group-hover/lens:shadow-2xl group-hover/lens:border group-hover/lens:border-orange-500 group-hover/lens:rounded group-hover/lens:z-50"
+                  onError={(e) => {
+                    // Fallback visual indicator if the image provider blocks or drops hotlinks
+                    e.target.onerror = null; 
+                    e.target.src = 'https://unsplash.com';
+                  }}
+                />
+              </a>
             ) : (
               <div className="opacity-0 group-hover:opacity-100 absolute inset-0 bg-black/95 flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono p-0.5 pointer-events-none z-10">
                 <span>OPEN</span>
                 <span>{displayCurrencySymbol(specs.basePriceUSD)}</span>
               </div>
             )}
-          </div>
-        );
+;
       }
     }
     return cellBlocks;
