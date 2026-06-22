@@ -108,33 +108,32 @@ export default function GameyGridDashboard() {
         // Dynamic lookup: Check if this coordinate exists inside your live Supabase array!
         const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
 
-        cellBlocks.push(
+                cellBlocks.push(
           <div
             key={`${x}-${y}`}
             style={{ width: `${specs.size}px`, height: `${specs.size}px` }}
             className={`border border-slate-900/40 relative group transition-all duration-150 ${
-              occupant ? 'bg-slate-800 border-orange-500/40' : 'bg-slate-950/60 hover:bg-emerald-500/20 border-dashed cursor-pointer'
+              occupant ? 'bg-slate-900 border-orange-500/40 z-20' : 'bg-slate-950/60 hover:bg-emerald-500/20 border-dashed cursor-pointer'
             }`}
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
             onClick={() => !occupant && setSelectedBlock({ x, y, specs })}
           >
-                        {occupant ? (
-              /* 🎯 DYNAMIC 5X ZOOM LENS LINK WRAPPER CONTAINER */
+            {occupant ? (
+              /* 🎯 DYNAMIC OVERLAY 5X ZOOM LENS LAYER CONTAINER */
               <a 
                 href={occupant.destination_link} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block w-full h-full relative group/lens cursor-pointer"
+                className="absolute inset-0 block transition-all duration-200 cubic-bezier(0.16, 1, 0.3, 1) hover:scale-[5.0] hover:z-50 hover:shadow-[0_25px_50px_-12px_rgba(249,115,22,0.5)] hover:border-2 hover:border-orange-500 hover:rounded-md bg-slate-900"
               >
                 <img 
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
-                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover rounded-none pointer-events-none"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-all duration-200 ease-out origin-center pointer-events-none scale-100 group-hover/lens:scale-[5] group-hover/lens:shadow-2xl group-hover/lens:border group-hover/lens:border-orange-500 group-hover/lens:rounded group-hover/lens:z-50"
                   onError={(e) => {
-                    // Fallback visual indicator if the image provider blocks or drops hotlinks
+                    // Fallback visual safeguard if hotlinking protection limits trigger on host
                     e.target.onerror = null; 
                     e.target.src = 'https://unsplash.com';
                   }}
@@ -146,6 +145,9 @@ export default function GameyGridDashboard() {
                 <span>{displayCurrencySymbol(specs.basePriceUSD)}</span>
               </div>
             )}
+          </div>
+        );
+}
 ;
       }
     }
