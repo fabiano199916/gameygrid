@@ -121,12 +121,14 @@ export default function GameyGridDashboard() {
           >
             {occupant ? (
               /* 🎯 DYNAMIC OVERLAY 5X ZOOM LENS LAYER CONTAINER */
-              <a 
-                href={occupant.destination_link} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="absolute inset-0 block transition-all duration-200 cubic-bezier(0.16, 1, 0.3, 1) hover:scale-[5.0] hover:z-50 hover:shadow-[0_25px_50px_-12px_rgba(249,115,22,0.5)] hover:border-2 hover:border-orange-500 hover:rounded-md bg-slate-900"
-              >
+             {/* ✅ CORRECT CODE (Wired up with full hardware-accelerated transform engines): */}
+<a 
+  href={occupant.destination_link} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className="absolute inset-0 block transform origin-center transition-transform duration-200 ease-out hover:scale-[5.0] hover:z-50 hover:shadow-[0_25px_50px_-12px_rgba(249,115,22,0.5)] hover:border-2 hover:border-orange-500 hover:rounded-md bg-slate-900"
+>
+
                 <img 
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
