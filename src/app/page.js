@@ -99,31 +99,39 @@ export default function GameyGridDashboard() {
     }
   };
 
-    const renderGridMatrix = () => {
+      const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
         
-        // Dynamic lookup: Check if this coordinate exists inside your live Supabase array!
+        // Check if this coordinate cell exists inside your live Supabase array
         const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
+
+        // Mathematical conversion from 1000px virtual scale to your 760px HTML display scale
+        const renderScaleMultiplier = 760 / 1000;
+        const leftPositionPx = x * renderScaleMultiplier;
+        const topPositionPx = y * renderScaleMultiplier;
+        const renderedSizePx = specs.size * renderScaleMultiplier;
 
         cellBlocks.push(
           <div
             key={`${x}-${y}`}
             style={{ 
-              width: `${specs.size}px`, 
-              height: `${specs.size}px`,
-              position: 'relative',
-              zIndex: isCurrentlyHovered ? 9999 : 10
+              position: 'absolute',
+              left: `${leftPositionPx}px`,
+              top: `${topPositionPx}px`,
+              width: `${renderedSizePx}px`, 
+              height: `${renderedSizePx}px`,
+              zIndex: isCurrentlyHovered ? 99999 : 10,
+              pointerEvents: 'auto'
             }}
-            className="border border-slate-900/40 transition-all duration-150"
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
           >
             {occupant ? (
-              /* 🎯 HARDWARE-ACCELERATED INLINE 5X ZOOM LENS LAYER */
+              /* 🎯 HARDWARE-ACCELERATED FLOATING 5X LENS CONTAINER */
               <a 
                 href={occupant.destination_link} 
                 target="_blank" 
@@ -135,18 +143,19 @@ export default function GameyGridDashboard() {
                   backgroundColor: '#0f172a',
                   transform: isCurrentlyHovered ? 'scale(5.0)' : 'scale(1.0)',
                   transformOrigin: 'center center',
-                  zIndex: isCurrentlyHovered ? 99999 : 20,
-                  boxShadow: isCurrentlyHovered ? '0 25px 50px -12px rgba(249, 115, 22, 0.7)' : 'none',
-                  border: isCurrentlyHovered ? '2px solid #f97316' : 'none',
+                  zIndex: isCurrentlyHovered ? 999999 : 20,
+                  boxShadow: isCurrentlyHovered ? '0 25px 50px -12px rgba(249, 115, 22, 0.9)' : 'none',
+                  border: isCurrentlyHovered ? '2px solid #f97316' : '1px solid rgba(249, 115, 22, 0.2)',
                   borderRadius: isCurrentlyHovered ? '6px' : '0px',
-                  transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease',
+                  transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease',
                   cursor: 'pointer'
                 }}
               >
                 <img 
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
-                  className="w-full h-full object-cover pointer-events-none"
+                  className="w-full h-full object-cover"
+                  style={{ display: 'block', width: '100%', height: '100%' }}
                   referrerPolicy="no-referrer"
                   onError={(e) => {
                     e.target.onerror = null; 
@@ -157,7 +166,7 @@ export default function GameyGridDashboard() {
             ) : (
               <div 
                 onClick={() => setSelectedBlock({ x, y, specs })}
-                className="opacity-0 hover:opacity-100 absolute inset-0 bg-black/95 flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono p-0.5 cursor-pointer z-10"
+                className="absolute inset-0 bg-slate-950/60 border border-slate-900/40 hover:bg-emerald-500/20 border-dashed cursor-pointer flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono opacity-0 hover:opacity-100 transition-opacity duration-100 z-10"
               >
                 <span>OPEN</span>
                 <span>{displayCurrencySymbol(specs.basePriceUSD)}</span>
@@ -169,6 +178,7 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
+
 
   return (
     <div className="flex flex-col lg:flex-row items-start justify-center min-h-screen p-6 bg-slate-950 gap-8 font-sans">
@@ -191,9 +201,9 @@ export default function GameyGridDashboard() {
         {/* ✅ CORRECT UNCLIPPED CODE (Unlocks the floating 5x zoom lens display): */}
 {/* GEOMETRIC AD CANVAS */}
 <div className="relative border-4 border-slate-800 bg-slate-900/20 rounded-2xl p-3 shadow-2xl overflow-visible max-w-full z-10">
-  <div className="flex flex-wrap w-[760px] h-[760px] bg-slate-950 rounded-lg overflow-visible border border-slate-900">
-    {renderGridMatrix()}
-  </div>
+  <div className="relative w-[760px] h-[760px] bg-slate-950 rounded-lg border border-slate-900 overflow-visible">
+          {renderGridMatrix()}
+        </div>
 
 
           {/* DYNAMIC HOVER VIDEO OVERLAY */}
