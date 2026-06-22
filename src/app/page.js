@@ -170,11 +170,14 @@ export default function GameyGridDashboard() {
           </select>
         </div>
 
-        {/* GEOMETRIC AD CANVAS */}
-        <div className="relative border-4 border-slate-800 bg-slate-900/20 rounded-2xl p-3 shadow-2xl overflow-hidden max-w-full">
-          <div className="flex flex-wrap w-[760px] h-[760px] bg-slate-950 rounded-lg overflow-hidden border border-slate-900">
-            {renderGridMatrix()}
-          </div>
+        
+        {/* ✅ CORRECT UNCLIPPED CODE (Unlocks the floating 5x zoom lens display): */}
+{/* GEOMETRIC AD CANVAS */}
+<div className="relative border-4 border-slate-800 bg-slate-900/20 rounded-2xl p-3 shadow-2xl overflow-visible max-w-full z-10">
+  <div className="flex flex-wrap w-[760px] h-[760px] bg-slate-950 rounded-lg overflow-visible border border-slate-900">
+    {renderGridMatrix()}
+  </div>
+
 
           {/* DYNAMIC HOVER VIDEO OVERLAY */}
           {activeHover && (
