@@ -143,25 +143,31 @@ export default function GameyGridDashboard() {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  display: 'block',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
                   
-                  // 🔴 THE NEW OVERSIZED RADAR CIRCLE RING
+                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING
                   border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
                   borderRadius: isCurrentlyHovered ? '50%' : '0px',
                   
                   transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
                   cursor: 'pointer',
-                  overflow: 'hidden' // Keeps the square image cleanly clipped inside your new massive red circle lens
+                  overflow: 'hidden' // Keeps the artwork perfectly clipped inside your red circle lens on hover
                 }}
               >
                 <img 
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
-                  className="w-full h-full object-cover"
-                  style={{ display: 'block', width: '100%', height: '100%' }}
+                  style={{ 
+                    display: 'block', 
+                    width: '100%', 
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
                   referrerPolicy="no-referrer"
                   onError={(e) => {
                     e.target.onerror = null; 
