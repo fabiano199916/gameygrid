@@ -271,9 +271,11 @@ export default function GameyGridDashboard() {
               placeholder="https://imgur.com" 
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" 
             />
-            <p className="text-[9px] text-slate-500 font-mono mt-1 leading-normal">
-              Paste a direct asset web link to your game drawing or icon design (supports PNG, JPG, or animated GIFs).
-            </p>
+            {/* ✅ CORRECT CODE (Displays clear structural asset guidelines near the input text field): */}
+<p className="text-[9px] text-slate-500 font-mono mt-1 leading-normal">
+  Paste a direct asset web link to your game drawing or icon design (supports PNG, JPG, or animated GIFs). <span className="text-orange-500/80 font-bold">Max recommended file size: 5MB</span> for optimal 300px hover zoom response speeds.
+</p>
+
           </div>
 
           <div>
