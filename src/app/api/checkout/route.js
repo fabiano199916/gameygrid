@@ -101,28 +101,46 @@ export async function POST(request) {
     return NextResponse.json({ url: session.url });
 
     // Build the secure payment checkout session structure
-    const session = await stripe.checkout.sessions.create({
+        // ⏳ AUTOMATED PROMO DEADLINE CLOCK LOCK
+    const currentTime = new Date();
+    const promoExpirationDeadline = new Date('2026-07-11T00:00:00Z');
+    const isPromoWindowCurrentlyActive = currentTime < promoExpirationDeadline;
+    const isEligibleForFreeTrial = isPromoWindowCurrentlyActive && tier === 'weekly';
+
+    const sessionOptions = {
       payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `Grid Coordinate Slot (${x}, ${y})`,
-              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px]`,
+              name: `Grid Coordinate Slot (${x}, ${y}) ${isEligibleForFreeTrial ? '[7-DAY FREE TRIAL SPECIAL]' : ''}`,
+              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px] ${isEligibleForFreeTrial ? '- Promo Trial ends automatically after July 10, 2026' : ''}`,
             },
             unit_amount: priceInCents,
+            recurring: {
+              interval: tier === 'weekly' ? 'week' : tier === 'monthly' ? 'month' : 'year'
+            }
           },
           quantity: 1,
         },
       ],
-      mode: 'payment',
+      mode: 'subscription',
       metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
       success_url: `${origin}/success`,
       cancel_url: `${origin}/`,
-    });
+    };
 
-    return NextResponse.json({ url: session.url });
+    if (isEligibleForFreeTrial) {
+      sessionOptions.subscription_data = {
+        trial_period_days: 7
+      };
+    }
+
+    // ✅ FIXED NAME DUPLICATION CONFLICT:
+    const checkoutSession = await stripe.checkout.sessions.create(sessionOptions);
+    return NextResponse.json({ url: checkoutSession.url });
+
 
   } catch (error) {
     console.error('Checkout Pipeline Defect:', error.message);
