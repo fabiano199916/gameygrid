@@ -176,13 +176,29 @@ export default function GameyGridDashboard() {
                 />
               </a>
             ) : (
+                            /* 🎯 PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
               <div 
                 onClick={() => setSelectedBlock({ x, y, specs })}
-                className="absolute inset-0 bg-slate-950/60 border border-slate-900/40 hover:bg-emerald-500/20 border-dashed cursor-pointer flex flex-col items-center justify-center text-[7px] text-emerald-400 font-mono opacity-0 hover:opacity-100 transition-opacity duration-100 z-10"
+                className="absolute inset-0 bg-slate-950/60 border border-slate-900/40 hover:bg-orange-500/20 border-dashed cursor-pointer flex flex-col items-center justify-center font-mono opacity-0 hover:opacity-100 transition-opacity duration-100 z-10"
               >
-                <span>OPEN</span>
-                <span>{displayCurrencySymbol(specs.basePriceUSD)}</span>
+                {/* Automatically displays "FREE 7D" if browsed before midnight on July 10, 2026 */}
+                {new Date() < new Date('2026-07-11T00:00:00Z') ? (
+                  <>
+                    <span className="text-[6px] text-orange-400 font-bold tracking-tighter">FREE 7D</span>
+                    <span className="text-[5px] text-slate-500 line-through">
+                      {displayCurrencySymbol(specs.basePriceUSD)}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[7px] text-emerald-400">OPEN</span>
+                    <span className="text-[7px] text-emerald-500/80">
+                      {displayCurrencySymbol(specs.basePriceUSD)}
+                    </span>
+                  </>
+                )}
               </div>
+
             )}
           </div>
         );
