@@ -64,47 +64,12 @@ export async function POST(request) {
     
     // Check if the user selected a weekly package during an active promo window
     const isEligibleForFreeTrial = isPromoTrialWindowActive && tier === 'weekly';
- // Build the secure payment checkout session structure
-    const sessionOptions = {
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Grid Coordinate Slot (${x}, ${y}) ${isEligibleForFreeTrial ? '[7-DAY FREE TRIAL]' : ''}`,
-              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px]`,
-            },
-            unit_amount: priceInCents,
-            // Convert to recurring subscription parameters for auto-renewals
-            recurring: {
-              interval: tier === 'weekly' ? 'week' : tier === 'monthly' ? 'month' : 'year'
-            }
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription', // Required to unlock Stripe's subscription & trial engines
-      metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
-      success_url: `${origin}/success`,
-      cancel_url: `${origin}/`,
-    };
-
-    // If eligible, inject a 7-day trial period into the subscription request
-    if (isEligibleForFreeTrial) {
-      sessionOptions.subscription_data = {
-        trial_period_days: 7 // Stripe automatically holds charges for exactly 7 days!
-      };
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionOptions);
-    return NextResponse.json({ url: session.url });
-
-    // Build the secure payment checkout session structure
-        // ⏳ AUTOMATED PROMO DEADLINE CLOCK LOCK
+    // ⏳ AUTOMATED PROMO DEADLINE CLOCK LOCK (Hard stop at midnight rolling out of July 10th)
     const currentTime = new Date();
     const promoExpirationDeadline = new Date('2026-07-11T00:00:00Z');
     const isPromoWindowCurrentlyActive = currentTime < promoExpirationDeadline;
+    
+    // Check eligibility: Promo must be active AND they must choose the weekly package option
     const isEligibleForFreeTrial = isPromoWindowCurrentlyActive && tier === 'weekly';
 
     const sessionOptions = {
@@ -137,13 +102,12 @@ export async function POST(request) {
       };
     }
 
-    // ✅ FIXED NAME DUPLICATION CONFLICT:
     const checkoutSession = await stripe.checkout.sessions.create(sessionOptions);
     return NextResponse.json({ url: checkoutSession.url });
-
 
   } catch (error) {
     console.error('Checkout Pipeline Defect:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+ 
