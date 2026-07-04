@@ -141,11 +141,9 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  // Calculates exact center offsets during hover balloons, resets to clean 0px corners when unhovered
+                  // 🎯 THE PROVEN SANDBOX REPAIR: Absolute positioning with physical pixel fallback dimensions
                   left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
                   top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  
-                  // 🔥 THE PERMANENT DOT FIX: Explicitly enforce raw pixels instead of breaking percentages!
                   width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
                   height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
                   
@@ -168,18 +166,10 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    width: '100px',  // 🎯 Hardcode a baseline starting resolution box
-                    height: '100px',
-                    
-                    // 🔥 THE TRANSFORMATION SCALE OVERRIDE:
-                    // If hovered, it matches the 300px lens. If unhovered, it multiplies to fill the exact cell pixels!
-                    transform: isCurrentlyHovered 
-                      ? 'translate(-50%, -50%) scale(3)' 
-                      : `translate(-50%, -50%) scale(${renderedSizePx / 100})`,
-                    
-                    transformOrigin: 'center center',
+                    left: 0,
+                    top: 0,
+                    width: '100%', 
+                    height: '100%',
                     objectFit: 'cover',
                     display: 'block'
                   }}
@@ -190,7 +180,6 @@ export default function GameyGridDashboard() {
                     e.target.src = 'https://unsplash.com';
                   }}
                 />
-
               </a>
             ) : (
               /* ⏳ PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
