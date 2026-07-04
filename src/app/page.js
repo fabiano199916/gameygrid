@@ -168,10 +168,18 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: '100%', 
-                    height: '100%',
+                    left: '50%',
+                    top: '50%',
+                    width: '100px',  // 🎯 Hardcode a baseline starting resolution box
+                    height: '100px',
+                    
+                    // 🔥 THE TRANSFORMATION SCALE OVERRIDE:
+                    // If hovered, it matches the 300px lens. If unhovered, it multiplies to fill the exact cell pixels!
+                    transform: isCurrentlyHovered 
+                      ? 'translate(-50%, -50%) scale(3)' 
+                      : `translate(-50%, -50%) scale(${renderedSizePx / 100})`,
+                    
+                    transformOrigin: 'center center',
                     objectFit: 'cover',
                     display: 'block'
                   }}
@@ -182,6 +190,7 @@ export default function GameyGridDashboard() {
                     e.target.src = 'https://unsplash.com';
                   }}
                 />
+
               </a>
             ) : (
               /* ⏳ PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
