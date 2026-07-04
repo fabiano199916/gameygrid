@@ -107,6 +107,9 @@ export default function GameyGridDashboard() {
         
         // Locate matching slot data from your database array
         const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
+        // 🎯 THE PROVEN SANDBOX REPAIR: Parse string metrics to integers to prevent data mismatches!
+        const occupant = liveDbSlots.find(s => parseInt(s.x_coordinate) === x && parseInt(s.y_coordinate) === y);
+
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
         // Mathematical conversion from 1000px virtual scale to your 760px HTML display scale
