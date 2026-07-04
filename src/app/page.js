@@ -142,52 +142,46 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  width: `${renderedSizePx}px`,  // 🔥 FORCES THE LINK BASE TO KEEP ORIGINAL POSITION BOUNDS
-                  height: `${renderedSizePx}px`, // 🔥 COMPLETELY WIPES OUT THE 0PX COLLAPSED DOT ERROR
-                  cursor: 'pointer',
+                  // When unhovered, inset 0 forces the link to stretch edge-to-edge across the parent cell bounds
+                  // When hovered, it balloons outward to exactly 300px from the absolute center point
+                  left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+                  top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+                  width: isCurrentlyHovered ? '300px' : '100%', 
+                  height: isCurrentlyHovered ? '300px' : '100%',
+                  backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
-                  display: 'block'
+                  boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
+                  
+                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING
+                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: isCurrentlyHovered ? '50%' : '0px',
+                  
+                  transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  display: 'flex', // 🔥 FIXES THE COLLAPSED DOT ERROR BY FORCING INNER LAYOUT STRETCHING
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                {/* 🔴 OUTER FRAME LAYER: Remains a crisp, sharp layout square covering the cell borders completely at all times */}
-                <div
-                  style={{
+                <img 
+                  src={occupant.image_storage_url} 
+                  alt={occupant.studio_name} 
+                  style={{ 
                     position: 'absolute',
-                    left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : 0,
-                    top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : 0,
-                    width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,   // 🔥 MATCHES CELL BOUNDS EXACTLY 
-                    height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,  // 🔥 PREVENTS IMAGES FROM COLLAPSING
-                    backgroundColor: '#0f172a',
-                    boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
-                    border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
-                    borderRadius: isCurrentlyHovered ? '50%' : '0px',
-                    transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
-                    overflow: 'hidden',
+                    inset: 0, // 🔥 FORCES THE IMAGE PIXELS TO EXPAND FULLY TO CELL BORDERS
+                    width: '100%', 
+                    height: '100%',
+                    objectFit: 'cover',
                     display: 'block'
                   }}
-                >
-                  <img 
-                    src={occupant.image_storage_url} 
-                    alt={occupant.studio_name} 
-                    style={{ 
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      width: '100%', 
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block'
-                    }}
-                    className="pointer-events-none"
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      e.target.onerror = null; 
-                      e.target.src = 'https://unsplash.com';
-                    }}
-                  />
-                </div>
+                  className="pointer-events-none"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.target.onerror = null; 
+                    e.target.src = 'https://unsplash.com';
+                  }}
+                />
               </a>
             ) : (
                             /* 🎯 PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
