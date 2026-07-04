@@ -142,43 +142,51 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  width: '100%',  // 🔥 FORCES THE LINK WRAPPER TO EXPAND FULLY TO CELL BORDERS
-                  height: '100%', // 🔥 PREVENTS CONTAINER COLLAPSING DEFECTS
+                  inset: 0,
                   display: 'block',
-                  backgroundColor: '#0f172a',
-                  zIndex: isCurrentlyHovered ? 9999999 : 20,
-                  boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
-                  
-                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING
-                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
-                  borderRadius: isCurrentlyHovered ? '50%' : '0px',
-                  
-                  transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
+                  width: '100%',
+                  height: '100%',
                   cursor: 'pointer',
-                  overflow: 'hidden'
+                  zIndex: isCurrentlyHovered ? 9999999 : 20,
                 }}
               >
-                <img 
-                  src={occupant.image_storage_url} 
-                  alt={occupant.studio_name} 
-                  style={{ 
+                {/* 🔴 OUTER CELL WRAPPER: Remains a perfect, uncollapsed square at all times when unhovered */}
+                <div
+                  style={{
                     position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: '100%',  // 🔥 FORCES THE IMAGE PIXELS TO EXPAND TO TOUCH ALL BORDERS
-                    height: '100%', // 🔥 COMPLETELY WIPS OUT THE TINY DOT DEFECT
-                    objectFit: 'cover',
+                    left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : 0,
+                    top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : 0,
+                    width: isCurrentlyHovered ? '300px' : '100%',
+                    height: isCurrentlyHovered ? '300px' : '100%',
+                    backgroundColor: '#0f172a',
+                    boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
+                    border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
+                    borderRadius: isCurrentlyHovered ? '50%' : '0px',
+                    transition: 'width 0.15s ease, height 0.15s ease, left 0.15s ease, top 0.15s ease, border-radius 0.15s ease, box-shadow 0.15s ease',
+                    overflow: 'hidden',
                     display: 'block'
                   }}
-                  className="pointer-events-none"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src = 'https://unsplash.com';
-                  }}
-                />
+                >
+                  <img 
+                    src={occupant.image_storage_url} 
+                    alt={occupant.studio_name} 
+                    style={{ 
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      width: '100%', 
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                    className="pointer-events-none"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = 'https://unsplash.com';
+                    }}
+                  />
+                </div>
               </a>
             ) : (
                             /* 🎯 PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
