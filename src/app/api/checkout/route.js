@@ -58,6 +58,48 @@ export async function POST(request) {
 
     const priceInCents = priceInUSD * 100;
 
+    // 🚀 DYNAMIC WEEKLY TRIAL CONFIGURATOR 
+    // Set this flag to 'true' during your promo launch window. Set to 'false' to end the promo!
+    const isPromoTrialWindowActive = true; 
+    
+    // Check if the user selected a weekly package during an active promo window
+    const isEligibleForFreeTrial = isPromoTrialWindowActive && tier === 'weekly';
+ // Build the secure payment checkout session structure
+    const sessionOptions = {
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Grid Coordinate Slot (${x}, ${y}) ${isEligibleForFreeTrial ? '[7-DAY FREE TRIAL]' : ''}`,
+              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px]`,
+            },
+            unit_amount: priceInCents,
+            // Convert to recurring subscription parameters for auto-renewals
+            recurring: {
+              interval: tier === 'weekly' ? 'week' : tier === 'monthly' ? 'month' : 'year'
+            }
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription', // Required to unlock Stripe's subscription & trial engines
+      metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
+      success_url: `${origin}/success`,
+      cancel_url: `${origin}/`,
+    };
+
+    // If eligible, inject a 7-day trial period into the subscription request
+    if (isEligibleForFreeTrial) {
+      sessionOptions.subscription_data = {
+        trial_period_days: 7 // Stripe automatically holds charges for exactly 7 days!
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionOptions);
+    return NextResponse.json({ url: session.url });
+
     // Build the secure payment checkout session structure
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
