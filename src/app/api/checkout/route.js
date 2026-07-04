@@ -63,7 +63,7 @@ export async function POST(request) {
     const isEligibleForFreeTrial = isPromoWindowCurrentlyActive && tier === 'weekly';
 
     const sessionOptions = {
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'link'],
       line_items: [
         {
           price_data: {
