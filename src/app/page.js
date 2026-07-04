@@ -99,13 +99,13 @@ export default function GameyGridDashboard() {
     }
   };
 
-        const renderGridMatrix = () => {
+          const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
         
-        // Check if this coordinate cell exists inside your live Supabase array
+        // Locate matching slot data from your database array
         const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
@@ -115,21 +115,17 @@ export default function GameyGridDashboard() {
         const topPositionPx = y * renderScaleMultiplier;
         const renderedSizePx = specs.size * renderScaleMultiplier;
 
-        // TARGET DIMENSION LOCK: Force the viewing glass to balloon to exactly 300px regardless of base size
-        const targetLensSizePx = 300;
-        const offsetCorrectionPx = (targetLensSizePx - renderedSizePx) / 2;
-
         cellBlocks.push(
+          /* 📦 FIXED COORDINATE PLACEHOLDER CELL: Locks cell bounds perfectly */
           <div
             key={`${x}-${y}`}
             style={{ 
               position: 'absolute',
-              left: isCurrentlyHovered ? `${leftPositionPx - offsetCorrectionPx}px` : `${leftPositionPx}px`,
-              top: isCurrentlyHovered ? `${topPositionPx - offsetCorrectionPx}px` : `${topPositionPx}px`,
-              width: isCurrentlyHovered ? `${targetLensSizePx}px` : `${renderedSizePx}px`, 
-              height: isCurrentlyHovered ? `${targetLensSizePx}px` : `${renderedSizePx}px`,
+              left: `${leftPositionPx}px`,
+              top: `${topPositionPx}px`,
+              width: `${renderedSizePx}px`, 
+              height: `${renderedSizePx}px`,
               zIndex: isCurrentlyHovered ? 999999 : 10,
-              transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
@@ -142,12 +138,14 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  // When unhovered, inset 0 forces the link to stretch edge-to-edge across the parent cell bounds
-                  // When hovered, it balloons outward to exactly 300px from the absolute center point
+                  // Calculates exact center offsets during hover balloons, resets to clean 0px corners when unhovered
                   left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
                   top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  width: isCurrentlyHovered ? '300px' : '100%', 
-                  height: isCurrentlyHovered ? '300px' : '100%',
+                  
+                  // 🔥 THE PERMANENT DOT FIX: Explicitly enforce raw pixels instead of breaking percentages!
+                  width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
+                  height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
+                  
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
@@ -159,9 +157,7 @@ export default function GameyGridDashboard() {
                   transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
                   cursor: 'pointer',
                   overflow: 'hidden',
-                  display: 'flex', // 🔥 FIXES THE COLLAPSED DOT ERROR BY FORCING INNER LAYOUT STRETCHING
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  display: 'block'
                 }}
               >
                 <img 
@@ -169,7 +165,8 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    inset: 0, // 🔥 FORCES THE IMAGE PIXELS TO EXPAND FULLY TO CELL BORDERS
+                    left: 0,
+                    top: 0,
                     width: '100%', 
                     height: '100%',
                     objectFit: 'cover',
@@ -184,12 +181,11 @@ export default function GameyGridDashboard() {
                 />
               </a>
             ) : (
-                            /* 🎯 PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
+              /* ⏳ PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
               <div 
                 onClick={() => setSelectedBlock({ x, y, specs })}
                 className="absolute inset-0 bg-slate-950/60 border border-slate-900/40 hover:bg-orange-500/20 border-dashed cursor-pointer flex flex-col items-center justify-center font-mono opacity-0 hover:opacity-100 transition-opacity duration-100 z-10"
               >
-                {/* Automatically displays "FREE 7D" if browsed before midnight on July 10, 2026 */}
                 {new Date() < new Date('2026-07-11T00:00:00Z') ? (
                   <>
                     <span className="text-[6px] text-orange-400 font-bold tracking-tighter">FREE 7D</span>
@@ -206,7 +202,6 @@ export default function GameyGridDashboard() {
                   </>
                 )}
               </div>
-
             )}
           </div>
         );
@@ -214,6 +209,8 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
+
+    
 
 
 
