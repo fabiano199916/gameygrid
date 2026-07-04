@@ -143,18 +143,16 @@ export default function GameyGridDashboard() {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: 'block', // Forces the anchor to match the cell borders completely at all times
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
                   
-                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING
+                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING (Only frames as a large circle on hover)
                   border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
                   borderRadius: isCurrentlyHovered ? '50%' : '0px',
                   
-                  transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
+                  transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
                   cursor: 'pointer',
                   overflow: 'hidden' // Keeps the artwork perfectly clipped inside your red circle lens on hover
                 }}
@@ -163,10 +161,13 @@ export default function GameyGridDashboard() {
                   src={occupant.image_storage_url} 
                   alt={occupant.studio_name} 
                   style={{ 
-                    display: 'block', 
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
                     width: '100%', 
                     height: '100%',
-                    objectFit: 'cover'
+                    objectFit: 'cover',
+                    display: 'block'
                   }}
                   referrerPolicy="no-referrer"
                   onError={(e) => {
@@ -345,6 +346,16 @@ export default function GameyGridDashboard() {
             <p className="text-[10px] text-slate-500 leading-relaxed font-mono mt-4 border-t border-slate-800/80 pt-3">
               • Inventory tracks actual data rows fetched from live cloud clusters.
             </p>
+            {/* 💳 SELF-SERVE CUSTOMER BILLING PORTAL ROUTER SHORTCUT */}
+<a 
+  href="https://stripe.com" 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className="text-[10px] text-slate-500 hover:text-orange-400 font-mono transition-colors duration-150 underline decoration-dotted"
+>
+  Manage / Cancel Subscription
+</a>
+
           </div>
         )}
       </div>
