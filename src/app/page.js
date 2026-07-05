@@ -136,59 +136,55 @@ export default function GameyGridDashboard() {
           >
             {occupant ? (
               /* 🎯 HARDWARE-ACCELERATED FLOATING PIXEL DILATION ENGINE */
-              <a 
-                href={occupant.destination_link} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                style={{
-                  position: 'absolute',
-                  // Calculates exact center offsets during hover balloons, resets to clean 0px corners when unhovered
-                  left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  
-                  // 🎯 THE PROVEN TEST PHASE REMEDY: Hardcode raw pixel dimensions into both states to expand the image to the borders!
-                  width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
-                  height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
-                  
-                  backgroundColor: '#0f172a',
-                  zIndex: isCurrentlyHovered ? 9999999 : 20,
-                  boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
-                  
-                  // 🔴 THE MASSIVE RED RADAR CIRCLE RING
-                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
-                  borderRadius: isCurrentlyHovered ? '50%' : '0px',
-                  
-                  transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                  display: 'block'
-                }}
-              >
-                <img 
-                  src={occupant.image_storage_url} 
-                  alt={occupant.studio_name} 
-                  style={{ 
-                    position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    width: `${renderedSizePx}px`, 
-                    height: `${renderedSizePx}px`,
-                    objectFit: 'cover',
-                    display: isCurrentlyHovered ? 'none' : 'block', // Hides the baseline copy during hover lens activation
-                    zIndex: 15,
-                    
-                    // 🔥 THE 400% CANVAS BOOSTER: Blows up the unhovered cell image to look massive on your grid map!
-                    transform: 'translate(-50%, -50%) scale(4)',
-                    transformOrigin: 'center center'
-                  }}
-                  className="pointer-events-none"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src = 'https://unsplash.com';
-                  }}
-                />
-              </a>
+                 /* 🎯 HARDWARE-ACCELERATED FLOATING PIXEL DILATION ENGINE */
+   <a 
+     href={occupant.destination_link} 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     style={{
+       position: 'absolute',
+       left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+       top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+       width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
+       height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
+       
+       // 🔥 THE PERMANENT FIX: Renders the image as a background layer when unhovered to fill the borders flawlessly!
+       backgroundImage: isCurrentlyHovered ? 'none' : `url(${occupant.image_storage_url})`,
+       backgroundSize: 'cover',
+       backgroundPosition: 'center center',
+       backgroundRepeat: 'no-repeat',
+       
+       backgroundColor: '#0f172a',
+       zIndex: isCurrentlyHovered ? 9999999 : 20,
+       boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
+       
+       border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
+       borderRadius: isCurrentlyHovered ? '50%' : '0px',
+       
+       transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
+       cursor: 'pointer',
+       overflow: 'hidden',
+       display: 'block'
+     }}
+     title={occupant.studio_name}
+   >
+     {/* 🖼️ INNER IMAGE ELEMENT: Only mounts and displays inside the expanded 300px circular radar lens on hover */}
+     {isCurrentlyHovered && (
+       <img 
+         src={occupant.image_storage_url} 
+         alt={occupant.studio_name} 
+         style={{ 
+           width: '100%', 
+           height: '100%', 
+           objectFit: 'cover',
+           display: 'block'
+         }}
+         className="pointer-events-none"
+         referrerPolicy="no-referrer"
+       />
+     )}
+   </a>
+
             ) : (
               /* ⏳ PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
               <div 
