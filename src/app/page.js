@@ -13,7 +13,6 @@ const computeZoneSpecs = (x, y) => {
   if (distance <= 450) return { size: 20, basePriceUSD: 75, zoneName: "Standard Block" };
   return { size: 10, basePriceUSD: 25, zoneName: "Micro Block" };
 };
-
 export default function GameyGridDashboard() {
   const [activeHover, setActiveHover] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
@@ -28,7 +27,6 @@ export default function GameyGridDashboard() {
   // State variables for real cloud data
   const [liveDbSlots, setLiveDbSlots] = useState([]);
   const [inventoryCounts, setInventoryCounts] = useState({ anchorsLeft: 10, premiumLeft: 100 });
-
   // FETCH THE ABSOLUTE TRUTH DIRECTLY FROM SUPABASE ON PAGE LOAD
   useEffect(() => {
     const fetchCloudGridMemory = async () => {
@@ -98,36 +96,30 @@ export default function GameyGridDashboard() {
       setCheckoutLoading(false);
     }
   };
-
-        const renderGridMatrix = () => {
+  const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
         
-        // 🎯 THE TRUTH REALIGNMENT: Parse string metrics to integers to prevent array query dropping!
         const occupant = liveDbSlots.find(s => parseInt(s.x_coordinate) === x && parseInt(s.y_coordinate) === y);
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
-        // Mathematical conversion from 1000px virtual scale to your 760px HTML display scale
         const renderScaleMultiplier = 760 / 1000;
         const leftPositionPx = x * renderScaleMultiplier;
         const topPositionPx = y * renderScaleMultiplier;
-        
-        // 🔥 DYNAMIC BORDER CORRECTION: If a slot is occupied, read its true database size instead of the hardcoded loop step!
-        const actualSlotBlockSize = occupant ? parseInt(occupant.block_size_px) : specs.size;
-        const renderedSizePx = actualSlotBlockSize * renderScaleMultiplier;
+        const renderedSizePx = specs.size * renderScaleMultiplier;
 
         cellBlocks.push(
-          /* 📦 DYNAMIC CELL WRAPPER: Automatically resizes to match the true graphic boundaries and borders! */
+          /* 📦 CORE CELL WRAPPER */
           <div
             key={`${x}-${y}`}
             style={{ 
               position: 'absolute',
               left: `${leftPositionPx}px`,
               top: `${topPositionPx}px`,
-              width: `${renderedSizePx}px`,  // 🔥 FORCES THE BLOCK CELL WIDTH TO REACH ITS TRUE BORDERS
-              height: `${renderedSizePx}px`, // 🔥 FORCES THE BLOCK CELL HEIGHT TO REACH ITS TRUE BORDERS
+              width: `${renderedSizePx}px`,  
+              height: `${renderedSizePx}px`, 
               zIndex: isCurrentlyHovered ? 999999 : 10,
               display: 'block', 
               padding: '0px',   
@@ -147,30 +139,34 @@ export default function GameyGridDashboard() {
                   position: 'absolute',
                   left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
                   top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  width: isCurrentlyHovered ? '300px' : '100%', 
-                  height: isCurrentlyHovered ? '300px' : '100%',
+                  width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
+                  height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
                   
-                  // 🔥 HIGH-ACCELERATED BACKGROUND ENGINE: Stretches the image edge-to-edge beautifully!
-                  backgroundImage: isCurrentlyHovered ? 'none' : `url(${occupant.image_storage_url})`,
+                  // 🔥 INJECT AS BACKGROUND IMAGE
+                  backgroundImage: `url(${occupant.image_storage_url})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',
+                  
+                  // 🔥 VISUAL OVERRIDE: Blows up the unhovered cell block size by 300% so it looks huge!
+                  transform: isCurrentlyHovered ? 'scale(1)' : 'scale(3)',
+                  transformOrigin: 'center center',
                   
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
                   
-                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.4)',
+                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.5)',
                   borderRadius: isCurrentlyHovered ? '50%' : '0px',
                   
-                  transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
+                  transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease',
                   cursor: 'pointer',
                   overflow: 'hidden',
                   display: 'block'
                 }}
                 title={occupant.studio_name}
               >
-                {/* 🖼️ INNER IMAGE ELEMENT: Expands inside your 300px circular radar lens on hover */}
+                {/* 🖼️ INNER IMAGE ELEMENT: Visible only during hover zoom expansion */}
                 {isCurrentlyHovered && (
                   <img 
                     src={occupant.image_storage_url} 
@@ -215,162 +211,186 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
-
-
-
-    
-
-
-
   return (
-    <div className="flex flex-col lg:flex-row items-start justify-center min-h-screen p-6 bg-slate-950 gap-8 font-sans">
-      <div className="flex flex-col items-center flex-1 w-full">
-        
-        {/* NAVIGATION LAYER */}
-        <div className="w-full max-w-[800px] flex justify-between items-center mb-6 bg-slate-900/60 border border-slate-800 px-6 py-4 rounded-2xl backdrop-blur-md">
-          <h1 className="font-black text-sm tracking-widest text-slate-100 uppercase">GAMEYGRID    TEST PAGE</h1>
-          <select 
-            value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)}
-            className="bg-slate-950 text-xs font-bold border border-slate-700 text-orange-400 rounded-lg px-3 py-1.5 focus:outline-none cursor-pointer"
-          >
-            <option value="USD">USD ($) — Global</option>
-            <option value="EUR">EUR (€) — Eurozone</option>
-            <option value="NZD">NZD (NZ$) — Local</option>
-          </select>
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-8 font-sans selection:bg-orange-500/30">
+      <header className="max-w-6xl mx-auto mb-8 flex justify-between items-center border-b border-slate-900 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">GAMEYGRID.COM</h1>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">Live Onboarding Production Console Engine</p>
         </div>
-
-        
-        {/* ✅ CORRECT UNCLIPPED CODE (Unlocks the floating 5x zoom lens display): */}
-{/* GEOMETRIC AD CANVAS */}
-<div className="relative border-4 border-slate-800 bg-slate-900/20 rounded-2xl p-3 shadow-2xl overflow-visible max-w-full z-10">
-  <div className="relative w-[760px] h-[760px] bg-slate-950 rounded-lg border border-slate-900 overflow-visible">
-          {renderGridMatrix()}
+        <div className="flex gap-2">
+          {['USD', 'EUR', 'NZD'].map((curr) => (
+            <button
+              key={curr}
+              onClick={() => setSelectedCurrency(curr)}
+              className={`px-3 py-1 rounded text-xs font-mono transition-all duration-150 ${selectedCurrency === curr ? 'bg-orange-500 text-slate-950 font-bold shadow-lg shadow-orange-500/20' : 'bg-slate-900 text-slate-400 hover:bg-slate-800'}`}
+            >
+              {curr}
+            </button>
+          ))}
         </div>
+      </header>
 
-
-          {/* DYNAMIC HOVER VIDEO OVERLAY */}
-          {activeHover && (
-            <div className="absolute z-50 bottom-6 right-6 w-64 bg-slate-900 border border-orange-500/60 rounded-xl p-4 shadow-2xl backdrop-blur-md">
-              <h4 className="font-black text-xs text-slate-100 uppercase truncate">{activeHover.studio_name}</h4>
-              <p className="text-[9px] font-mono text-slate-400 uppercase mt-0.5">{activeHover.specs.zoneName} Slot</p>
-              <div className="my-3 aspect-video rounded-lg overflow-hidden border border-slate-800 bg-black">
-                <iframe className="w-full h-full" src={activeHover.game_trailer_url} title="Trailer player" />
+      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section className="lg:col-span-2 relative bg-slate-950 border border-slate-900 rounded-xl p-4 min-h-[800px] overflow-hidden shadow-2xl shadow-black/50">
+          <div className="absolute inset-4 bg-[linear-gradient(to_right,#020617_1px,transparent_1px),linear-gradient(to_bottom,#020617_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-40" />
+          <div className="relative w-[760px] h-[760px] mx-auto bg-slate-950/80 rounded border border-slate-900 shadow-inner">
+            {renderGridMatrix()}
+          </div>
+        </section>
+        <section className="space-y-6">
+          <div className="bg-slate-900/40 border border-slate-900 rounded-xl p-5 backdrop-blur-sm">
+            <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase font-mono mb-4">Live Canvas Inventory</h2>
+            <div className="grid grid-cols-2 gap-4 font-mono text-center">
+              <div className="bg-slate-950 border border-slate-900 p-3 rounded-lg">
+                <span className="block text-2xl font-bold text-amber-400">{inventoryCounts.anchorsLeft}</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider">Anchors Left</span>
               </div>
-              <a href={activeHover.destination_link} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-orange-500 text-black text-xs font-bold py-2 rounded-lg">
-                View Game on Steam
-              </a>
+              <div className="bg-slate-950 border border-slate-900 p-3 rounded-lg">
+                <span className="block text-2xl font-bold text-orange-400">{inventoryCounts.premiumLeft}</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider">Premium Left</span>
+              </div>
+            </div>
+          </div>
+
+          {selectedBlock ? (
+            <div className="bg-slate-900/60 border border-orange-500/20 rounded-xl p-5 backdrop-blur-sm shadow-xl shadow-orange-500/5 animate-in fade-in slide-in-from-bottom-4 duration-200">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-base font-bold text-orange-400 font-mono">Reserve Slot</h3>
+                  <p className="text-xs text-slate-400 font-mono mt-0.5">X: {selectedBlock.x} | Y: {selectedBlock.y}</p>
+                </div>
+                <span className="px-2 py-0.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded text-[10px] font-mono font-bold uppercase tracking-wider">
+                  {selectedBlock.specs.zoneName}
+                </span>
+              </div>
+
+              <form onSubmit={executeSecureStripeCheckout} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 mb-1">Studio Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={studioName}
+                    onChange={(e) => setStudioName(e.target.value)}
+                    placeholder="e.g., Team Cherry"
+                    className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-200 font-mono focus:outline-none focus:border-orange-500/50 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 mb-1">Steam Store Page URL</label>
+                  <input
+                    type="url"
+                    required
+                    value={steamUrl}
+                    onChange={(e) => setSteamUrl(e.target.value)}
+                    placeholder="https://steampowered.com..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-200 font-mono focus:outline-none focus:border-orange-500/50 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 mb-1">Capsule Logo Image URL (.png / .jpg)</label>
+                  <input
+                    type="url"
+                    required
+                    value={logoImageUrl}
+                    onChange={(e) => setLogoImageUrl(e.target.value)}
+                    placeholder="e.g., https://postimages.org"
+                    className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-200 font-mono focus:outline-none focus:border-orange-500/50 transition-colors"
+                  />
+                  <p className="text-[10px] text-slate-500 font-mono mt-1">💡 For best results, use a 300x300px square crop.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 mb-1">Subscription Billing Frequency</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'weekly', label: 'Weekly', desc: 'Free 7D Promo' },
+                      { id: 'monthly', label: 'Monthly', desc: '10% Disc.' },
+                      { id: 'annual', label: 'Annual', desc: '25% Disc.' }
+                    ].map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setSubscriptionTier(t.id)}
+                        className={`p-2 border rounded text-center transition-all duration-150 flex flex-col items-center justify-center ${subscriptionTier === t.id ? 'border-orange-500 bg-orange-500/5 text-orange-400 font-bold' : 'border-slate-800 bg-slate-950 text-slate-400 hover:bg-slate-900'}`}
+                      >
+                        <span className="text-xs font-mono">{t.label}</span>
+                        <span className="text-[8px] opacity-60 font-mono mt-0.5">{t.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {errorPrompt && (
+                  <div className="p-2.5 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400 font-mono leading-relaxed">
+                    {errorPrompt}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={checkoutLoading}
+                  className="w-full py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-bold font-mono rounded text-sm transition-all duration-150 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {checkoutLoading ? (
+                    <span className="block w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>Generate Checkout Protocol</span>
+                      <span className="text-xs px-1.5 py-0.5 bg-slate-950 text-orange-400 rounded border border-orange-500/20 font-bold">
+                        {subscriptionTier === 'weekly' ? 'FREE' : displayCurrencySymbol(selectedBlock.specs.basePriceUSD)}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="bg-slate-900/20 border border-slate-900 border-dashed rounded-xl p-8 text-center backdrop-blur-sm">
+              <p className="text-xs text-slate-500 font-mono leading-relaxed">
+                Select an available canvas coordinate box matrix slot from the live map dashboard to generate checkout protocols.
+              </p>
             </div>
           )}
-        </div>
-      </div>
+        </section>
+      </main>
 
-      {/* SIDEBAR CONTAINER PANEL */}
-      <div className="w-full lg:w-80 flex flex-col gap-6 lg:mt-16">
-        {selectedBlock ? (
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-2xl">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
-              <div>
-                <h3 className="text-xs font-black uppercase text-orange-400">Configure Placement</h3>
-                <p className="text-[10px] font-mono text-slate-400 mt-0.5">Coordinates: ({selectedBlock.x}, {selectedBlock.y})</p>
-              </div>
-              <button onClick={() => setSelectedBlock(null)} className="text-slate-500 hover:text-slate-300 text-xs font-bold font-mono">✕ Close</button>
-            </div>
-
-            {errorPrompt && <p className="text-xs font-mono text-red-400 bg-red-950/30 p-2 border border-red-900 rounded-lg mb-3">⚠️ {errorPrompt}</p>}
-
-                            <form onSubmit={executeSecureStripeCheckout} className="space-y-4 text-xs">
-          <div>
-            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Studio / Developer Name</label>
-            <input type="text" required value={studioName} onChange={(e) => setStudioName(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none" placeholder="e.g. Pixel Forge Games" />
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Steam Game Store link</label>
-            <input type="url" required value={steamUrl} onChange={(e) => setSteamUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" placeholder="https://steampowered.com..." />
-          </div>
-
-          {/* 🎨 BRAND NEW FIELD: CUSTOM LOGO DESIGN IMAGE LINK */}
-          <div>
-            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Custom Logo or Drawing Image URL</label>
-            <input 
-              type="url" 
-              required 
-              value={logoImageUrl} 
-              onChange={(e) => setLogoImageUrl(e.target.value)} 
-              placeholder="https://imgur.com" 
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-300 focus:outline-none" 
-            />
-            {/* ✅ CORRECT CODE (Displays clear structural asset guidelines near the input text field): */}
-<p className="text-[9px] text-slate-500 font-mono mt-1 leading-normal">
-  Paste a direct asset web link to your game drawing or icon design (supports PNG, JPG, or animated GIFs). <span className="text-orange-500/80 font-bold">Max recommended file size: 5MB</span> for optimal 300px hover zoom response speeds.
-</p>
-
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Billing Rental Cycle</label>
-            <select value={subscriptionTier} onChange={(e) => setSubscriptionTier(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-orange-400 font-bold focus:outline-none cursor-pointer">
-              <option value="weekly">Weekly — Base Rate</option>
-              <option value="monthly">Monthly — Save 10%</option>
-              <option value="annual">Annual — Save 25%</option>
-            </select>
-          </div>
-
-          {/* 🛡️ THE MANDATORY LEGAL SHIELD GATEWAY INPUT */}
-          <div className="flex items-start gap-2.5 my-4">
-            <input 
-              type="checkbox" 
-              required 
-              className="w-4 h-4 mt-0.5 accent-orange-500 rounded cursor-pointer focus:ring-0" 
-            />
-            <span className="text-[10px] text-slate-400 font-mono leading-relaxed">
-              I explicitly read, accept, and agree to the 
-              <a href="/terms" target="_blank" className="text-orange-400 hover:underline mx-1">Terms of Service</a> 
-              and the 
-              <a href="/privacy" target="_blank" className="text-orange-400 hover:underline ml-1">Refund Policy</a>. 
-              I verify that I hold all legal trademarks and permissions for the uploaded media assets.
-            </span>
-          </div>
-
-          <button type="submit" disabled={checkoutLoading} className="w-full bg-orange-500 hover:bg-orange-400 disabled:bg-slate-800 text-black font-extrabold py-2.5 rounded-lg transition-colors cursor-pointer text-center">
-            {checkoutLoading ? 'Encrypting Tokens...' : 'Open Sandbox Checkout'}
-          </button>
-        </form>
-
-
-          </div>
-        ) : (
-          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-5 backdrop-blur-md">
-            <h3 className="text-xs font-black tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-              Live Compliance Tracker
-            </h3>
-            <div className="space-y-3 font-mono text-xs">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Mega Anchors:</span>
-                <span className="text-orange-400 font-bold">{inventoryCounts.anchorsLeft} / 10 Left</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Premium Slots:</span>
-                <span className="text-orange-400 font-bold">{inventoryCounts.premiumLeft} / 100 Left</span>
-              </div>
-            </div>
-            <p className="text-[10px] text-slate-500 leading-relaxed font-mono mt-4 border-t border-slate-800/80 pt-3">
-              • Inventory tracks actual data rows fetched from live cloud clusters.
-            </p>
-            {/* 💳 SELF-SERVE CUSTOMER BILLING PORTAL ROUTER SHORTCUT */}
-<a 
-  href="https://stripe.com" 
-  target="_blank" 
-  rel="noopener noreferrer" 
-  className="text-[10px] text-slate-500 hover:text-orange-400 font-mono transition-colors duration-150 underline decoration-dotted"
->
-  Manage / Cancel Subscription
-</a>
-
-          </div>
-        )}
-      </div>
+      <footer className="max-w-6xl mx-auto mt-12 border-t border-slate-900 pt-6 flex flex-col items-center gap-2">
+        <p className="text-[10px] text-slate-500 font-mono text-center">
+          • Framework tracks actual data rows fetched from live cloud clusters.
+        </p>
+        
+        {/* 💳 DYNAMIC SELF-SERVE CUSTOMER BILLING CONNECTOR */}
+        <button 
+          onClick={async () => {
+            const customerEmailInput = prompt("🔑 Manage Your Space: Enter the exact billing email address you used at checkout:");
+            if (!customerEmailInput) return;
+            
+            try {
+              const response = await fetch('/api/portal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: customerEmailInput })
+              });
+              
+              const data = await response.json();
+              if (response.ok && data.url) {
+                window.open(data.url, '_blank', 'noopener,noreferrer');
+              } else {
+                alert(`❌ Verification Failed: ${data.error || 'Could not verify account records.'}`);
+              }
+            } catch (err) {
+              alert("❌ Cloud Communication Timeout. Please try again.");
+            }
+          }}
+          className="text-[10px] text-slate-400 hover:text-orange-400 font-mono transition-colors duration-150 underline decoration-dotted bg-transparent border-none cursor-pointer p-0"
+        >
+          Manage / Cancel Subscription
+        </button>
+      </footer>
     </div>
   );
 }
