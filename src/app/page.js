@@ -142,12 +142,14 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  // When unhovered, inset 0 forces the link to stretch edge-to-edge across the parent cell bounds
-                  // When hovered, it balloons outward to exactly 300px from the absolute center point
+                  // Calculates exact center offsets during hover balloons, resets to clean 0px corners when unhovered
                   left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
                   top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  width: isCurrentlyHovered ? '300px' : '100%', 
-                  height: isCurrentlyHovered ? '300px' : '100%',
+                  
+                  // 🎯 THE PROVEN TEST PHASE REMEDY: Hardcode raw pixel dimensions into both states to expand the image to the borders!
+                  width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
+                  height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
+                  
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
@@ -167,7 +169,9 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    inset: '0px', // 🔥 FORCES THE GRAPHIC PIXELS TO EXPAND TO TOUCH ALL CELL BORDERS
+                    left: 0,
+                    top: 0,
+                    // 🔥 FORCES THE IMAGE PIXELS TO EXPAND DIRECTLY TO CELL BLOCK BORDERS
                     width: '100%', 
                     height: '100%',
                     objectFit: 'cover',
