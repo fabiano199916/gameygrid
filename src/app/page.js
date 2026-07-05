@@ -177,7 +177,7 @@ export default function GameyGridDashboard() {
                     zIndex: 15,
                     
                     // 🔥 THE SIZE BOOSTER: Scales up the unhovered asset by 250% to make it highly visible!
-                    transform: isCurrentlyHovered ? 'scale(1)' : 'scale(2.5)',
+                    transform: isCurrentlyHovered ? 'scale(1)' : 'scale(10)',
                     transformOrigin: 'center center',
                     transition: 'transform 0.15s ease'
                   }}
