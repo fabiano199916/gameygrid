@@ -175,7 +175,7 @@ export default function GameyGridDashboard() {
                     width: '100%', 
                     height: '100%',
                     objectFit: 'cover',
-                    display: 'clear'
+                    display: 'white'
                   }}
                   className="pointer-events-none"
                   referrerPolicy="no-referrer"
