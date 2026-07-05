@@ -5,7 +5,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = body;
+    const { x, y, size, studioName, steamUrl, logoImageUrl, tier, email } = body;
 
     const origin = request.headers.get('origin') || 'https://gameygrid.com';
 
@@ -54,16 +54,27 @@ export async function POST(request) {
 
     const priceInCents = priceInUSD * 100;
 
-    // ⏳ 3. AUTOMATED TIME-LOCKED PROMOTION CLOCK ENGINE
-    // Free trials for weekly tiers vanish completely at midnight rolling out of July 10, 2026
+    // 3. Automated Time-Locked Promotion Window Logic
     const currentTime = new Date();
     const promoExpirationDeadline = new Date('2026-07-11T00:00:00Z');
-    const isPromoWindowCurrentlyActive = currentTime < promoExpirationDeadline;
     
+    const isPromoWindowCurrentlyActive = currentTime < promoExpirationDeadline;
     const isEligibleForFreeTrial = isPromoWindowCurrentlyActive && tier === 'weekly';
+
+    // 🔍 SERIALIZED TRACKING OBJECT FOR DUAL-LAYER METADATA INGESTION
+    const coordinateTrackingMetadata = {
+      x: x.toString(),
+      y: y.toString(),
+      size: size.toString(),
+      studioName: studioName,
+      steamUrl: steamUrl,
+      logoImageUrl: logoImageUrl,
+      tier: tier
+    };
 
     const sessionOptions = {
       payment_method_types: ['card', 'link'],
+      customer_email: email ? email.trim().toLowerCase() : undefined,
       line_items: [
         {
           price_data: {
@@ -81,24 +92,18 @@ export async function POST(request) {
         },
       ],
       mode: 'subscription',
-       // 🔥 CRITICAL DATA FIX: Explicitly pass your layout variables inside the master object metadata!
-      metadata: { 
-          x: x.toString(),
-          y: y.toString(), 
-          size: size.toString(), 
-          studioName: studioName, 
-          link: steamUrl, 
-          logoImageUrl: logoImageUrl, 
-          tier: tier 
+      // Stays visible inside standard Checkout Session Logs
+      metadata: coordinateTrackingMetadata,
+      subscription_data: {
+        // 🔥 CRITICAL DATA FIX: Copies tracking info straight onto the recurring active subscription card object panel!
+        metadata: coordinateTrackingMetadata
       },
       success_url: `${origin}/success`,
       cancel_url: `${origin}/`,
     };
 
     if (isEligibleForFreeTrial) {
-      sessionOptions.subscription_data = {
-        trial_period_days: 7
-      };
+      sessionOptions.subscription_data.trial_period_days = 7;
     }
 
     const checkoutSession = await stripe.checkout.sessions.create(sessionOptions);
