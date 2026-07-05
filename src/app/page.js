@@ -169,17 +169,17 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    inset: 0,
-                    width: '100%', 
-                    height: '100%',
+                    left: '50%',
+                    top: '50%',
+                    width: `${renderedSizePx}px`, 
+                    height: `${renderedSizePx}px`,
                     objectFit: 'cover',
-                    display: 'block',
+                    display: isCurrentlyHovered ? 'none' : 'block', // Hides the baseline copy during hover lens activation
                     zIndex: 15,
                     
-                    // 🔥 THE SIZE BOOSTER: Scales up the unhovered asset by 250% to make it highly visible!
-                    transform: isCurrentlyHovered ? 'scale(1)' : 'scale(50)',
-                    transformOrigin: 'center center',
-                    transition: 'transform 0.15s ease'
+                    // 🔥 THE 400% CANVAS BOOSTER: Blows up the unhovered cell image to look massive on your grid map!
+                    transform: 'translate(-50%, -50%) scale(4)',
+                    transformOrigin: 'center center'
                   }}
                   className="pointer-events-none"
                   referrerPolicy="no-referrer"
