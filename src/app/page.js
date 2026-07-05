@@ -99,13 +99,13 @@ export default function GameyGridDashboard() {
     }
   };
 
-      const renderGridMatrix = () => {
+        const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
         
-        // 🎯 THE PROVEN TEST PHASE REMEDY: Parse coordinates to integers to prevent array query dropping!
+        // 🎯 THE TRUTH REALIGNMENT: Parse string metrics to integers to prevent array query dropping!
         const occupant = liveDbSlots.find(s => parseInt(s.x_coordinate) === x && parseInt(s.y_coordinate) === y);
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
@@ -113,21 +113,24 @@ export default function GameyGridDashboard() {
         const renderScaleMultiplier = 760 / 1000;
         const leftPositionPx = x * renderScaleMultiplier;
         const topPositionPx = y * renderScaleMultiplier;
-        const renderedSizePx = specs.size * renderScaleMultiplier;
+        
+        // 🔥 DYNAMIC BORDER CORRECTION: If a slot is occupied, read its true database size instead of the hardcoded loop step!
+        const actualSlotBlockSize = occupant ? parseInt(occupant.block_size_px) : specs.size;
+        const renderedSizePx = actualSlotBlockSize * renderScaleMultiplier;
 
         cellBlocks.push(
-          /* 📦 CORE CELL WRAPPER: This sets the rock-solid outer layout boundaries and borders of your cell! */
+          /* 📦 DYNAMIC CELL WRAPPER: Automatically resizes to match the true graphic boundaries and borders! */
           <div
             key={`${x}-${y}`}
             style={{ 
               position: 'absolute',
               left: `${leftPositionPx}px`,
               top: `${topPositionPx}px`,
-              width: `${renderedSizePx}px`,  // 🔥 STRICT PIXEL OVERRIDES FOR CELL WIDTH BORDERS
-              height: `${renderedSizePx}px`, // 🔥 STRICT PIXEL OVERRIDES FOR CELL HEIGHT BORDERS
+              width: `${renderedSizePx}px`,  // 🔥 FORCES THE BLOCK CELL WIDTH TO REACH ITS TRUE BORDERS
+              height: `${renderedSizePx}px`, // 🔥 FORCES THE BLOCK CELL HEIGHT TO REACH ITS TRUE BORDERS
               zIndex: isCurrentlyHovered ? 999999 : 10,
-              display: 'block', // 🔥 DESTROYS HIDDEN FLEXBOX COMPRESSION LOOPS
-              padding: '0px',   // 🔥 COMPLETELY ELIMINATES INNER PADDING DEFECTS
+              display: 'block', 
+              padding: '0px',   
               margin: '0px',
               overflow: 'visible'
             }}
@@ -136,55 +139,53 @@ export default function GameyGridDashboard() {
           >
             {occupant ? (
               /* 🎯 HARDWARE-ACCELERATED FLOATING PIXEL DILATION ENGINE */
-                 /* 🎯 HARDWARE-ACCELERATED FLOATING PIXEL DILATION ENGINE */
-   <a 
-     href={occupant.destination_link} 
-     target="_blank" 
-     rel="noopener noreferrer" 
-     style={{
-       position: 'absolute',
-       left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-       top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-       width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
-       height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
-       
-       // 🔥 THE PERMANENT FIX: Renders the image as a background layer when unhovered to fill the borders flawlessly!
-       backgroundImage: isCurrentlyHovered ? 'none' : `url(${occupant.image_storage_url})`,
-       backgroundSize: 'cover',
-       backgroundPosition: 'center center',
-       backgroundRepeat: 'no-repeat',
-       
-       backgroundColor: '#0f172a',
-       zIndex: isCurrentlyHovered ? 9999999 : 20,
-       boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
-       
-       border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.2)',
-       borderRadius: isCurrentlyHovered ? '50%' : '0px',
-       
-       transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
-       cursor: 'pointer',
-       overflow: 'hidden',
-       display: 'block'
-     }}
-     title={occupant.studio_name}
-   >
-     {/* 🖼️ INNER IMAGE ELEMENT: Only mounts and displays inside the expanded 300px circular radar lens on hover */}
-     {isCurrentlyHovered && (
-       <img 
-         src={occupant.image_storage_url} 
-         alt={occupant.studio_name} 
-         style={{ 
-           width: '100%', 
-           height: '100%', 
-           objectFit: 'cover',
-           display: 'block'
-         }}
-         className="pointer-events-none"
-         referrerPolicy="no-referrer"
-       />
-     )}
-   </a>
-
+              <a 
+                href={occupant.destination_link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{
+                  position: 'absolute',
+                  left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+                  top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
+                  width: isCurrentlyHovered ? '300px' : '100%', 
+                  height: isCurrentlyHovered ? '300px' : '100%',
+                  
+                  // 🔥 HIGH-ACCELERATED BACKGROUND ENGINE: Stretches the image edge-to-edge beautifully!
+                  backgroundImage: isCurrentlyHovered ? 'none' : `url(${occupant.image_storage_url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center center',
+                  backgroundRepeat: 'no-repeat',
+                  
+                  backgroundColor: '#0f172a',
+                  zIndex: isCurrentlyHovered ? 9999999 : 20,
+                  boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
+                  
+                  border: isCurrentlyHovered ? '4px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.4)',
+                  borderRadius: isCurrentlyHovered ? '50%' : '0px',
+                  
+                  transition: 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s cubic-bezier(0.16, 1, 0.3, 1), left 0.15s cubic-bezier(0.16, 1, 0.3, 1), top 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.15s ease, box-shadow 0.15s ease',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  display: 'block'
+                }}
+                title={occupant.studio_name}
+              >
+                {/* 🖼️ INNER IMAGE ELEMENT: Expands inside your 300px circular radar lens on hover */}
+                {isCurrentlyHovered && (
+                  <img 
+                    src={occupant.image_storage_url} 
+                    alt={occupant.studio_name} 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                    className="pointer-events-none"
+                    referrerPolicy="no-referrer"
+                  />
+                )}
+              </a>
             ) : (
               /* ⏳ PROMO-OPTIMIZED INTERACTIVE TEXT CELL DESIGN */
               <div 
@@ -214,6 +215,7 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
+
 
 
     
