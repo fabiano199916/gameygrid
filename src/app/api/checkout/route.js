@@ -81,7 +81,16 @@ export async function POST(request) {
         },
       ],
       mode: 'subscription',
-      metadata: { x, y, size, studioName, link: steamUrl, logoImageUrl, tier },
+       // 🔥 CRITICAL DATA FIX: Explicitly pass your layout variables inside the master object metadata!
+      metadata: { 
+          x: x.toString(),
+          y: y.toString(), 
+          size: size.toString(), 
+          studioName: studioName, 
+          link: steamUrl, 
+          logoImageUrl: logoImageUrl, 
+          tier: tier 
+      },
       success_url: `${origin}/success`,
       cancel_url: `${origin}/`,
     };
