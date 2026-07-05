@@ -99,17 +99,14 @@ export default function GameyGridDashboard() {
     }
   };
 
-          const renderGridMatrix = () => {
+      const renderGridMatrix = () => {
     let cellBlocks = [];
     for (let x = 0; x < 1000; x += 20) {
       for (let y = 0; y < 1000; y += 20) {
         const specs = computeZoneSpecs(x, y);
         
-        // Locate matching slot data from your database array
-        const occupant = liveDbSlots.find(s => s.x_coordinate === x && s.y_coordinate === y);
-        // 🎯 THE PROVEN SANDBOX REPAIR: Parse string metrics to integers to prevent data mismatches!
+        // 🎯 THE PROVEN TEST PHASE REMEDY: Parse coordinates to integers to prevent array query dropping!
         const occupant = liveDbSlots.find(s => parseInt(s.x_coordinate) === x && parseInt(s.y_coordinate) === y);
-
         const isCurrentlyHovered = activeHover && activeHover.x === x && activeHover.y === y;
 
         // Mathematical conversion from 1000px virtual scale to your 760px HTML display scale
@@ -119,16 +116,20 @@ export default function GameyGridDashboard() {
         const renderedSizePx = specs.size * renderScaleMultiplier;
 
         cellBlocks.push(
-          /* 📦 FIXED COORDINATE PLACEHOLDER CELL: Locks cell bounds perfectly */
+          /* 📦 CORE CELL WRAPPER: This sets the rock-solid outer layout boundaries and borders of your cell! */
           <div
             key={`${x}-${y}`}
             style={{ 
               position: 'absolute',
               left: `${leftPositionPx}px`,
               top: `${topPositionPx}px`,
-              width: `${renderedSizePx}px`, 
-              height: `${renderedSizePx}px`,
+              width: `${renderedSizePx}px`,  // 🔥 STRICT PIXEL OVERRIDES FOR CELL WIDTH BORDERS
+              height: `${renderedSizePx}px`, // 🔥 STRICT PIXEL OVERRIDES FOR CELL HEIGHT BORDERS
               zIndex: isCurrentlyHovered ? 999999 : 10,
+              display: 'block', // 🔥 DESTROYS HIDDEN FLEXBOX COMPRESSION LOOPS
+              padding: '0px',   // 🔥 COMPLETELY ELIMINATES INNER PADDING DEFECTS
+              margin: '0px',
+              overflow: 'visible'
             }}
             onMouseEnter={() => occupant && setActiveHover({ ...occupant, specs, x, y })}
             onMouseLeave={() => setActiveHover(null)}
@@ -141,12 +142,12 @@ export default function GameyGridDashboard() {
                 rel="noopener noreferrer" 
                 style={{
                   position: 'absolute',
-                  // 🎯 THE PROVEN SANDBOX REPAIR: Absolute positioning with physical pixel fallback dimensions
+                  // When unhovered, inset 0 forces the link to stretch edge-to-edge across the parent cell bounds
+                  // When hovered, it balloons outward to exactly 300px from the absolute center point
                   left: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
                   top: isCurrentlyHovered ? `-${(300 - renderedSizePx) / 2}px` : '0px',
-                  width: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`, 
-                  height: isCurrentlyHovered ? '300px' : `${renderedSizePx}px`,
-                  
+                  width: isCurrentlyHovered ? '300px' : '100%', 
+                  height: isCurrentlyHovered ? '300px' : '100%',
                   backgroundColor: '#0f172a',
                   zIndex: isCurrentlyHovered ? 9999999 : 20,
                   boxShadow: isCurrentlyHovered ? '0 0 50px 20px rgba(239, 68, 68, 0.6)' : 'none',
@@ -166,8 +167,7 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    left: 0,
-                    top: 0,
+                    inset: '0px', // 🔥 FORCES THE GRAPHIC PIXELS TO EXPAND TO TOUCH ALL CELL BORDERS
                     width: '100%', 
                     height: '100%',
                     objectFit: 'cover',
@@ -210,6 +210,7 @@ export default function GameyGridDashboard() {
     }
     return cellBlocks;
   };
+
 
     
 
