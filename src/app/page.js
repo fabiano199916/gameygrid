@@ -232,12 +232,16 @@ export default function GameyGridDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <section className="lg:col-span-2 relative bg-slate-950 border border-slate-900 rounded-xl p-4 min-h-[800px] overflow-hidden shadow-2xl shadow-black/50">
+                {/* 📦 THE BIG FRAME GRID - CHANGED TO OVERFLOW-VISIBLE TO STOP LENS CLIPPING */}
+        <section className="lg:col-span-2 relative bg-slate-950 border border-slate-900 rounded-xl p-4 min-h-[800px] overflow-visible shadow-2xl shadow-black/50">
           <div className="absolute inset-4 bg-[linear-gradient(to_right,#020617_1px,transparent_1px),linear-gradient(to_bottom,#020617_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-40" />
-          <div className="relative w-[760px] h-[760px] mx-auto bg-slate-950/80 rounded border border-slate-900 shadow-inner">
+          
+          {/* THE SPECIFIC MATRIX FRAME CONTAINER - ALSO SET TO OVERFLOW-VISIBLE */}
+          <div className="relative w-[760px] h-[760px] mx-auto bg-slate-950/80 rounded border border-slate-900 shadow-inner overflow-visible">
             {renderGridMatrix()}
           </div>
         </section>
+
         <section className="space-y-6">
           <div className="bg-slate-900/40 border border-slate-900 rounded-xl p-5 backdrop-blur-sm">
             <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase font-mono mb-4">Live Canvas Inventory</h2>
