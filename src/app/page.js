@@ -169,13 +169,17 @@ export default function GameyGridDashboard() {
                   alt={occupant.studio_name} 
                   style={{ 
                     position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    // 🔥 FORCES THE IMAGE PIXELS TO EXPAND DIRECTLY TO CELL BLOCK BORDERS
+                    inset: 0,
                     width: '100%', 
                     height: '100%',
                     objectFit: 'cover',
-                    display: 'white'
+                    display: 'block',
+                    zIndex: 15,
+                    
+                    // 🔥 THE SIZE BOOSTER: Scales up the unhovered asset by 250% to make it highly visible!
+                    transform: isCurrentlyHovered ? 'scale(1)' : 'scale(2.5)',
+                    transformOrigin: 'center center',
+                    transition: 'transform 0.15s ease'
                   }}
                   className="pointer-events-none"
                   referrerPolicy="no-referrer"
