@@ -362,8 +362,8 @@ export default function GameyGridDashboard() {
         </section>
       </main>
 
-      <footer className="max-w-6xl mx-auto mt-12 border-t border-slate-900 pt-6 flex flex-col items-center gap-2">
-        <p className="text-[10px] text-slate-500 font-mono text-center">
+            <footer className="max-w-6xl mx-auto mt-12 border-t border-slate-900 pt-6 pb-12 flex flex-col items-center gap-4 text-center px-4">
+        <p className="text-[10px] text-slate-500 font-mono">
           • Framework tracks actual data rows fetched from live cloud clusters.
         </p>
         
@@ -394,7 +394,16 @@ export default function GameyGridDashboard() {
         >
           Manage / Cancel Subscription
         </button>
+
+        {/* ⚖️ LEGAL SAFETY DISCLAIMER CARD BLOCK PANEL */}
+        <div className="mt-2 max-w-2xl bg-slate-950 border border-slate-900/60 p-4 rounded-lg text-left font-mono">
+          <h4 className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">⚖️ Terms of Service & Liability Disclaimer</h4>
+          <p className="text-[9px] text-slate-500 leading-relaxed">
+            GameyGrid operates strictly as a neutral spatial hosting canvas. All drawings, logos, and destination links are provided entirely by third-party users. The platform founder (Fabiano Baretta) does not guarantee the integrity or safety of external links. Under no circumstances shall the platform be held liable for any malware, digital fraud, phishing scripts, or malicious intent originating from user-allocated slots. Users navigate outbound links entirely at their own risk.
+          </p>
+        </div>
       </footer>
+
     </div>
   );
 }
