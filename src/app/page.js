@@ -327,6 +327,21 @@ export default function GameyGridDashboard() {
                     ))}
                   </div>
                 </div>
+                                {/* 🛡️ REQUIRED TERMS OF SERVICE COMPLIANCE TICKBOX */}
+                <div className="flex items-start gap-2.5 pt-1 pb-2">
+                  <input
+                    type="checkbox"
+                    id="tos-compliance-gate"
+                    required
+                    className="mt-0.5 h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-orange-500 focus:ring-0 cursor-pointer accent-orange-500"
+                  />
+                  <label 
+                    htmlFor="tos-compliance-gate" 
+                    className="text-[10px] text-slate-400 font-mono leading-tight cursor-pointer select-none"
+                  >
+                    I explicitly agree to the GameyGrid Terms of Service and acknowledge the absolute Liability Disclaimer written in the page footer.
+                  </label>
+                </div>
 
                 {errorPrompt && (
                   <div className="p-2.5 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400 font-mono leading-relaxed">
