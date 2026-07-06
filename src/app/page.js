@@ -410,14 +410,15 @@ export default function GameyGridDashboard() {
           Manage / Cancel Subscription
         </button>
 
-        {/* ⚖️ LEGAL SAFETY DISCLAIMER CARD BLOCK PANEL */}
+                {/* ⚖️ LEGAL SAFETY DISCLAIMER CARD BLOCK PANEL - WITH DOWNTIME IMMUNITY */}
         <div className="mt-2 max-w-2xl bg-slate-950 border border-slate-900/60 p-4 rounded-lg text-left font-mono">
           <h4 className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">⚖️ Terms of Service & Liability Disclaimer</h4>
           <p className="text-[9px] text-slate-500 leading-relaxed">
-            GameyGrid operates strictly as a neutral spatial hosting canvas. All drawings, logos, and destination links are provided entirely by third-party users. The platform founder (Fabiano Baretta) does not guarantee the integrity or safety of external links. Under no circumstances shall the platform be held liable for any malware, digital fraud, phishing scripts, or malicious intent originating from user-allocated slots. Users navigate outbound links entirely at their own risk.
+            GameyGrid operates strictly as a neutral spatial hosting canvas. All drawings, logos, and destination links are provided entirely by third-party users. The platform founder (Fabiano Baretta) does not guarantee the integrity or safety of external links, nor does he guarantee uninterrupted platform uptime. Under no circumstances shall the platform be held liable for temporary system downtime, hosting disruptions, network outages, or service suspensions due to routine or emergency server maintenance. Furthermore, GameyGrid is completely immune from liabilities concerning third-party malware, digital fraud, phishing scripts, or malicious intent originating from user-allocated slots. Users navigate outbound links entirely at their own risk.
           </p>
         </div>
       </footer>
+
 
     </div>
   );
