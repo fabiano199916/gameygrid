@@ -81,7 +81,7 @@ export async function POST(request) {
             currency: 'usd',
             product_data: {
               name: `Grid Coordinate Slot (${x}, ${y}) ${isEligibleForFreeTrial ? '[7-DAY FREE TRIAL SPECIAL]' : ''}`,
-              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px] ${isEligibleForFreeTrial ? '- Promo Trial ends automatically after July 10, 2026' : ''}`,
+              description: `Spatial Ad Grid Matrix Rental Allocation Unit [Size: ${size}px] ${isEligibleForFreeTrial ? '- Promo Trial ends automatically after July 20, 2026' : ''}`,
             },
             unit_amount: priceInCents,
             recurring: {
