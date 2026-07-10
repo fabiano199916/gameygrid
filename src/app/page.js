@@ -188,7 +188,7 @@ export default function GameyGridDashboard() {
                 onClick={() => setSelectedBlock({ x, y, specs })}
                 className="absolute inset-0 bg-slate-950/60 border border-slate-900/40 hover:bg-orange-500/20 border-dashed cursor-pointer flex flex-col items-center justify-center font-mono opacity-0 hover:opacity-100 transition-opacity duration-100 z-10"
               >
-                {new Date() < new Date('2026-07-11T00:00:00Z') ? (
+                {new Date() < new Date('2026-07-21T00:00:00Z') ? (
                   <>
                     <span className="text-[6px] text-orange-400 font-bold tracking-tighter">FREE 7D</span>
                     <span className="text-[5px] text-slate-500 line-through">

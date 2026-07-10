@@ -56,7 +56,7 @@ export async function POST(request) {
 
     // 3. Automated Time-Locked Promotion Window Logic
     const currentTime = new Date();
-    const promoExpirationDeadline = new Date('2026-07-11T00:00:00Z');
+    const promoExpirationDeadline = new Date('2026-07-21T00:00:00Z');
     
     const isPromoWindowCurrentlyActive = currentTime < promoExpirationDeadline;
     const isEligibleForFreeTrial = isPromoWindowCurrentlyActive && tier === 'weekly';
