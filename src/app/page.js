@@ -410,11 +410,11 @@ export default function GameyGridDashboard() {
           Manage / Cancel Subscription
         </button>
 
-                {/* ⚖️ LEGAL SAFETY DISCLAIMER CARD BLOCK PANEL - WITH DOWNTIME IMMUNITY */}
+               {/* ⚖️ LEGAL SAFETY DISCLAIMER CARD BLOCK PANEL - WITH PAYMENT EVICTION PROTECTION */}
         <div className="mt-2 max-w-2xl bg-slate-950 border border-slate-900/60 p-4 rounded-lg text-left font-mono">
           <h4 className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">⚖️ Terms of Service & Liability Disclaimer</h4>
           <p className="text-[9px] text-slate-500 leading-relaxed">
-            GameyGrid operates strictly as a neutral spatial hosting canvas. All drawings, logos, and destination links are provided entirely by third-party users. The platform founder (Fabiano Baretta) does not guarantee the integrity or safety of external links, nor does he guarantee uninterrupted platform uptime. Under no circumstances shall the platform be held liable for temporary system downtime, hosting disruptions, network outages, or service suspensions due to routine or emergency server maintenance. Furthermore, GameyGrid is completely immune from liabilities concerning third-party malware, digital fraud, phishing scripts, or malicious intent originating from user-allocated slots. Users navigate outbound links entirely at their own risk.
+            GameyGrid operates strictly as a neutral spatial hosting canvas. All drawings, logos, and destination links are provided entirely by third-party users. The platform founder (Fabiano Baretta) does not guarantee the integrity or safety of external links, nor does he guarantee uninterrupted platform uptime. Under no circumstances shall the platform be held liable for temporary system downtime, hosting disruptions, or network outages due to maintenance. Furthermore, GameyGrid is completely immune from liabilities concerning third-party malware, digital fraud, phishing scripts, or malicious intent originating from user-allocated slots; users navigate outbound links entirely at their own risk. <strong>Payment Default Policy:</strong> Continuous grid placement is strictly contingent upon successful, timely subscription clearance through Stripe. In the event of a payment default, failed auto-renewal transaction, or immediate subscription cancellation, GameyGrid reserves the absolute right to instantly terminate the space allocation without prior notice, permanently removing user graphics and links, and making the coordinate slot immediately available to new customers.
           </p>
         </div>
       </footer>
