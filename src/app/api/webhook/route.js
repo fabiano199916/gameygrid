@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js'; 
 import { Resend } from 'resend'; 
-import Stripe from 'stripe'; // 🚀 FIXED: Swapped from legacy require() to modern ES import syntax!
+import Stripe from 'stripe'; 
 
-// Initialize Stripe modern class engine uniformly
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY); 
 
@@ -28,7 +27,9 @@ export async function POST(request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const { x, y, size, studioName, link, logoImageUrl, tier } = session.metadata;
+    
+    // 🔍 FIXED: Extracted 'steamUrl' directly from your actual Stripe payload metadata layout!
+    const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = session.metadata;
 
     let daysToAdd = 7;
     if (tier === 'monthly') daysToAdd = 30;
@@ -38,7 +39,7 @@ export async function POST(request) {
     expirationTimestamp.setDate(expirationTimestamp.getDate() + daysToAdd);
 
     try {
-      // 1. SAVE TO DATABASE WITH EXPLICIT BYPASS CLIENT
+      // 1. SAVE TO DATABASE WITH CORRECT MAPPING KEY DATA VALUES
       const { error } = await secureAdminSupabase 
         .from('gaming_grid_slots')
         .insert([{
@@ -46,7 +47,7 @@ export async function POST(request) {
           y_coordinate: parseInt(y),
           block_size_px: parseInt(size),
           studio_name: studioName,
-          destination_link: link,
+          destination_link: steamUrl, // 🚀 FIXED: Now safely maps your live metadata parameter field!
           image_storage_url: logoImageUrl,
           availability_status: 'pending_review', 
           subscription_tier: tier,
@@ -57,7 +58,7 @@ export async function POST(request) {
 
       // 2. 📬 GENERATE AND TRANSMIT THE ENCRYPTED MODERATOR REVIEW EMAIL
       const cleanStudioQuery = encodeURIComponent(studioName);
-      const iponzSearchLink = `https://iponz.govt.nz/${cleanStudioQuery}`; 
+      const iponzSearchLink = `https://iponz.govt.nz{cleanStudioQuery}`; 
 
       await resend.emails.send({
         from: 'GameyGrid Security <security@gameygrid.com>',
@@ -72,7 +73,7 @@ export async function POST(request) {
               <p><strong>Studio Name:</strong> ${studioName}</p>
               <p><strong>Coordinates:</strong> (${x}, ${y}) - [Size: ${size}px]</p>
               <p><strong>Subscription Package:</strong> ${tier.toUpperCase()}</p>
-              <p><strong>Target Destination:</strong> <a href="${link}" target="_blank" style="color: #38bdf8;">${link}</a></p>
+              <p><strong>Target Destination:</strong> <a href="${steamUrl}" target="_blank" style="color: #38bdf8;">${steamUrl}</a></p>
             </div>
 
             <h4 style="color: #f97316; text-transform: uppercase;">Submitted Artwork Drawing:</h4>
