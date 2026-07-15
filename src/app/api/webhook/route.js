@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js'; // 🔐 Import the direct initialization engine
+import { createClient } from '@supabase/supabase-js'; 
 import { Resend } from 'resend'; 
+import Stripe from 'stripe'; // 🚀 FIXED: Swapped from legacy require() to modern ES import syntax!
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe modern class engine uniformly
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY); 
 
 // 🛡️ INITIALISE SECURE ADMIN CLIENT BYPASSING RLS
 const secureAdminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // 👈 Uses the private master key hidden in Vercel
+  process.env.SUPABASE_SERVICE_ROLE_KEY 
 );
 
 export async function POST(request) {
@@ -37,7 +39,7 @@ export async function POST(request) {
 
     try {
       // 1. SAVE TO DATABASE WITH EXPLICIT BYPASS CLIENT
-      const { error } = await secureAdminSupabase // 👈 Swapped to your secure admin tracker client
+      const { error } = await secureAdminSupabase 
         .from('gaming_grid_slots')
         .insert([{
           x_coordinate: parseInt(x),
@@ -55,7 +57,7 @@ export async function POST(request) {
 
       // 2. 📬 GENERATE AND TRANSMIT THE ENCRYPTED MODERATOR REVIEW EMAIL
       const cleanStudioQuery = encodeURIComponent(studioName);
-      const iponzSearchLink = `https://iponz.govt.nz{cleanStudioQuery}`; // Added missing slash here too!
+      const iponzSearchLink = `https://iponz.govt.nz/${cleanStudioQuery}`; 
 
       await resend.emails.send({
         from: 'GameyGrid Security <security@gameygrid.com>',
