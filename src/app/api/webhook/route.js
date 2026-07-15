@@ -27,11 +27,10 @@ export async function POST(request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    
-    // 🔍 FIXED: Extracted 'steamUrl' directly from your actual Stripe payload metadata layout!
     const { x, y, size, studioName, steamUrl, logoImageUrl, tier } = session.metadata;
 
     let daysToAdd = 7;
+    if (tier === 'weekly') daysToAdd = 7; // Fixed safety tier mapping fallback
     if (tier === 'monthly') daysToAdd = 30;
     if (tier === 'annual') daysToAdd = 365;
     
@@ -47,7 +46,7 @@ export async function POST(request) {
           y_coordinate: parseInt(y),
           block_size_px: parseInt(size),
           studio_name: studioName,
-          destination_link: steamUrl, // 🚀 FIXED: Now safely maps your live metadata parameter field!
+          destination_link: steamUrl,
           image_storage_url: logoImageUrl,
           availability_status: 'pending_review', 
           subscription_tier: tier,
@@ -56,13 +55,13 @@ export async function POST(request) {
 
       if (error) throw error;
 
-      // 2. 📬 GENERATE AND TRANSMIT THE ENCRYPTED MODERATOR REVIEW EMAIL
+      // 2. 📬 GENERATE AND TRANSMIT THE MODERATOR REVIEW EMAIL
       const cleanStudioQuery = encodeURIComponent(studioName);
       const iponzSearchLink = `https://iponz.govt.nz{cleanStudioQuery}`; 
 
       await resend.emails.send({
         from: 'GameyGrid Security <security@gameygrid.com>',
-        to: process.env.MODERATOR_NOTIFICATION_EMAIL,
+        to: 'fabiano199916@gmail.com', // 🚀 FIXED: Hardcoded your exact verified personal email address!
         subject: `🚨 [QUARANTINE REVIEW] New Grid Placement: ${studioName}`,
         html: `
           <div style="font-family: monospace; background-color: #020617; color: #f1f5f9; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; max-w: 600px;">
