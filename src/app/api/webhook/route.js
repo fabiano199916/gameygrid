@@ -62,7 +62,7 @@ export async function POST(request) {
       await resend.emails.send({
         from: 'GameyGrid Security <security@gameygrid.com>',
         to: 'fabiano199916@gmail.com', // 🚀 FIXED: Hardcoded your exact verified personal email address!
-        subject: `🚨 [QUARANTINE REVIEW] New Grid Placement: ${studioName}`,
+        subject: `🚨 [REVIEW] New Grid Placement: ${studioName}`,
         html: `
           <div style="font-family: monospace; background-color: #020617; color: #f1f5f9; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; max-w: 600px;">
             <h2 style="color: #f97316; text-transform: uppercase; margin-bottom: 4px;">Security Audit Required</h2>
