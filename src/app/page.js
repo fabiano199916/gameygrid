@@ -214,12 +214,39 @@ export default function GameyGridDashboard() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-8 font-sans selection:bg-orange-500/30">
       <header className="max-w-6xl mx-auto mb-8 flex justify-between items-center border-b border-slate-900 pb-4">
-            </header>
+              {/* 🎮 GAMEYGRID INTERACTIVE NAVIGATION INSTRUCTIONS PANEL */}
+        <div className="mx-auto max-w-4xl bg-slate-950 border border-slate-900 p-4 rounded-xl mb-6 font-mono text-center">
+          <h3 className="text-xs text-orange-500 font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
+            🕹️ How To Navigate The Matrix
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-4">
+            <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-900/60">
+              <span className="text-[10px] text-slate-500 block uppercase tracking-wider mb-1">Step 01</span>
+              <p className="text-xs text-slate-300"><strong className="text-white">Hover to Scan:</strong> Glide your cursor smoothly across the grid coordinate tiles.</p>
+            </div>
+            <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-900/60">
+              <span className="text-[10px] text-slate-500 block uppercase tracking-wider mb-1">Step 02</span>
+              <p className="text-xs text-slate-300"><strong className="text-white">Magnify Capsule Art:</strong> Watch game artwork balloon instantly inside your 300px circular radar lens.</p>
+            </div>
+            <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-900/60">
+              <span className="text-[10px] text-slate-500 block uppercase tracking-wider mb-1">Step 03</span>
+              <p className="text-xs text-slate-300"><strong className="text-white">Discover on Steam:</strong> Click onto any occupied slot allocation unit to launch straight into their developer hub.</p>
+            </div>
+          </div>
 
-      {/* 🚀 PASTE THE INSTRUCTIONS PANEL RIGHT HERE (Line 45-50) */}
-
-      <main className="flex flex-col items-center justify-center p-4">
-        {/* Your 1000x1000 Grid Matrix Canvas layout code starts below here */}
+          {/* 🎨 REQUIRED ARTWORK SPECIFICATIONS FOR DEVELOPERS */}
+          <div className="bg-slate-950 border border-dashed border-slate-800 p-3 rounded-lg text-left inline-block w-full">
+            <span className="text-[10px] text-orange-400 font-bold uppercase tracking-wider block mb-2">📁 Required Artwork Guidelines for Placement:</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-400">
+              <div>• <strong className="text-slate-300">Format:</strong> Web-ready <span className="text-white font-bold">.JPG</span> or <span className="text-white font-bold">.PNG</span> only</div>
+              <div>• <strong className="text-slate-300">Dimensions:</strong> Aspect square <span className="text-white font-bold">300x300 px</span></div>
+              <div>• <strong className="text-slate-300">Resolution:</strong> Max density up to <span className="text-white font-bold">72 DPI</span></div>
+              <div>• <strong className="text-slate-300">File Weight:</strong> Compressed under <span className="text-white font-bold">500 KB</span></div>
+            </div>
+          </div>
+          
+          <p className="text-[10px] text-slate-500 mt-3 italic">ℹ️ Want your game displayed? Click any vacant pixel square block matrix to initiate deployment checkout protocols.</p>
+        </div>
 
         <div>
           <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">GAMEYGRID.COM</h1>
