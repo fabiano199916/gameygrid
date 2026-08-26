@@ -214,6 +214,13 @@ export default function GameyGridDashboard() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-8 font-sans selection:bg-orange-500/30">
       <header className="max-w-6xl mx-auto mb-8 flex justify-between items-center border-b border-slate-900 pb-4">
+            </header>
+
+      {/* 🚀 PASTE THE INSTRUCTIONS PANEL RIGHT HERE (Line 45-50) */}
+
+      <main className="flex flex-col items-center justify-center p-4">
+        {/* Your 1000x1000 Grid Matrix Canvas layout code starts below here */}
+
         <div>
           <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">GAMEYGRID.COM</h1>
           <p className="text-xs text-slate-400 font-mono mt-0.5">Live Onboarding Production Console Engine</p>
